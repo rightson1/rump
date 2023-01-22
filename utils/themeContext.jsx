@@ -13,7 +13,9 @@ import { createTheme } from "@mui/material/styles";
 import { ThemeProvider as Theme } from "@mui/material/styles";
 import { CssBaseline, useMediaQuery } from "@mui/material";
 import { useRouter } from "next/router";
-
+import { AuthProvider } from "./authContext";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 const ThemeContext = createContext();
 
 
@@ -59,7 +61,7 @@ export const ThemeProvider = ({ children }) => {
     }, [router.pathname])
 
 
-
+    const [queryClient] = useState(() => new QueryClient());
     return (
         <ThemeContext.Provider
             value={{
@@ -81,13 +83,20 @@ export const ThemeProvider = ({ children }) => {
 
             }}
         >
+            <QueryClientProvider client={queryClient}>
+                <Theme theme={theme}>
 
-            <Theme theme={theme}>
+                    <AuthProvider>
 
-                <CssBaseline />
-                {children}
 
-            </Theme>
+                        <CssBaseline />
+                        {children}
+
+
+                        <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+                    </AuthProvider>
+                </Theme>
+            </QueryClientProvider>
 
         </ThemeContext.Provider>
     );

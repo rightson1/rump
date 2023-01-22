@@ -25,6 +25,7 @@ import Collapse from '@mui/material/Collapse';
 import NewspaperOutlinedIcon from '@mui/icons-material/NewspaperOutlined';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import LoginIcon from '@mui/icons-material/Login';
+import { useAuth } from "../utils/authContext";
 const drawerWidth = 200;
 
 
@@ -34,6 +35,7 @@ const drawerWidth = 200;
 const Sidebar = () => {
     const { colors, mode, dispatch, actionTypes, open, setOpen, isMobile, isLarge } = useGlobalProvider();
     const theme = useTheme();
+    const { user } = useAuth()
     const [selected, setSelected] = React.useState()
     const [active, setActive] = React.useState(false);
     const close = useRef()
@@ -114,10 +116,10 @@ const Sidebar = () => {
                             height: "60px"
                         }} />
                         <Typography variant='h4' fontWeight="bold">
-                            Janice
+                            {user?.name}
                         </Typography>
                         <Typography variant='h6' fontWeight="bold" mt="-10px" color={colors.greenAccent[400]}>
-                            @_janice
+                            {user?.email.slice(0, 10) + '...'}
                         </Typography>
 
                     </Box>

@@ -18,14 +18,15 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Flex from "./Flex"
 import { useTheme } from "@mui/material";
+import { useAuth } from "../utils/authContext";
 
 const Navbar = () => {
-    const { colors, mode, dispatch, actionTypes, isMobile, open, setOpen, isLarge } = useGlobalProvider();
+    const { colors, mode, dispatch, actionTypes, isMobile, open, setOpen, } = useGlobalProvider();
+    const { logout, user } = useAuth()
     const [anchorEl, setAnchorEl] = useState(null);
     const isOpen = Boolean(anchorEl);
     const handleClick = (event) => setAnchorEl(event.currentTarget);
     const handleClose = () => setAnchorEl(null);
-
 
     return (
         <Box sx={{
@@ -126,7 +127,9 @@ const Navbar = () => {
                         onClose={handleClose}
                         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
                     >
-                        <MenuItem >Log Out</MenuItem>
+                        <MenuItem
+                            onClick={logout}
+                        >Log Out</MenuItem>
                     </Menu>
                 </Toolbar>
             </AppBar>

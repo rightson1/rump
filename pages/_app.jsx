@@ -12,6 +12,7 @@ import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import 'react-quill/dist/quill.snow.css'
 import Rightbar from "../components/Rightbar";
+import Protected from "../components/Protected";
 function MyApp(props) {
   const clientSideEmotionCache = createEmotionCache();
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
@@ -35,18 +36,22 @@ function MyApp(props) {
 
         </Head>
         <CacheProvider value={emotionCache}>
-          <ThemeProvider>
-            <div className='app'>
-              <Sidebar />
-              <main className="content" style={{
-                width: "100%",
-              }}>
-                <Navbar />
-                <Component {...pageProps} />
-              </main>
 
-            </div>
+          <ThemeProvider>
+            <Protected>
+              <div className='app'>
+                <Sidebar />
+                <main className="content" style={{
+                  width: "100%",
+                }}>
+                  <Navbar />
+                  <Component {...pageProps} />
+                </main>
+
+              </div>
+            </Protected>
           </ThemeProvider>
+
         </CacheProvider>
       </>
     );
@@ -62,18 +67,22 @@ function MyApp(props) {
 
       </Head>
       <CacheProvider value={emotionCache}>
+
         <ThemeProvider>
-          <div className='app'>
-            <Sidebar />
-            <main className="content" style={{
-              width: "100%",
-            }}>
-              <Navbar />
-              <Component {...pageProps} />
-            </main>
-            <Rightbar />
-          </div>
+          <Protected>
+            <div className='app'>
+              <Sidebar />
+              <main className="content" style={{
+                width: "100%",
+              }}>
+                <Navbar />
+                <Component {...pageProps} />
+              </main>
+              <Rightbar />
+            </div>
+          </Protected>
         </ThemeProvider>
+
       </CacheProvider>
     </>
   );
