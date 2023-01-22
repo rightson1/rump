@@ -14,30 +14,17 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import { Avatar, Tooltip, useMediaQuery, Zoom } from '@mui/material';
-import AddShoppingCartOutlinedIcon from '@mui/icons-material/AddShoppingCartOutlined';
 import AutoStoriesOutlinedIcon from '@mui/icons-material/AutoStoriesOutlined';
 import { useRouter } from "next/router";
 import ChatBubbleOutline from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import TextSnippetOutlinedIcon from '@mui/icons-material/TextSnippetOutlined';
-import FiberNewOutlinedIcon from '@mui/icons-material/FiberNewOutlined';
-import ListAltOutlinedIcon from '@mui/icons-material/ListAltOutlined';
-import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import FastfoodOutlinedIcon from '@mui/icons-material/FastfoodOutlined';
-import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import Collapse from '@mui/material/Collapse';
 import NewspaperOutlinedIcon from '@mui/icons-material/NewspaperOutlined';
-import MonthIcon from '@mui/icons-material/CalendarMonth';
-import TodayIcon from '@mui/icons-material/CalendarToday';
-import Person4OutlinedIcon from '@mui/icons-material/Person4Outlined';
+import HowToRegIcon from '@mui/icons-material/HowToReg';
+import LoginIcon from '@mui/icons-material/Login';
 const drawerWidth = 200;
 
 
@@ -428,7 +415,19 @@ const navItems = [
         link: 'events',
         icon: <CalendarTodayOutlinedIcon />
     },
-
+    {
+        text: "Account",
+    },
+    {
+        text: "Login",
+        link: 'login',
+        icon: <LoginIcon />
+    },
+    {
+        text: "Register",
+        link: 'register',
+        icon: <HowToRegIcon />
+    },
 
 ];
 

@@ -15,8 +15,16 @@ import Rightbar from "../components/Rightbar";
 function MyApp(props) {
   const clientSideEmotionCache = createEmotionCache();
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
-
-  if (Component.user) {
+  if (Component.noLayout) {
+    return (
+      <CacheProvider value={emotionCache}>
+        <ThemeProvider>
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </CacheProvider>
+    );
+  }
+  else if (Component.user) {
     return (
       <>
         <Head>
