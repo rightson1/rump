@@ -236,7 +236,7 @@ const Calender = () => {
                 dayMaxEvents={true}
                 select={handleDateClick}
                 eventClick={handleEventClick}
-                eventsSet={(events) => setCurrentEvents(events)}
+                // eventsSet={(events) => setCurrentEvents(events)}
                 eventAdd={handleEvent}
                 eventChange={function () { }}
                 eventRemove={handleDelete}

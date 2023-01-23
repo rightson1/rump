@@ -1,8 +1,8 @@
 import { db } from "../firebase";
-import { collection, getDocs, addDoc, deleteDoc, doc } from "firebase/firestore";
+import { collection, getDocs, addDoc, deleteDoc, doc, setDoc } from "firebase/firestore";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
-const addEvents = (newEvents) => addDoc(collection(db, "events"), newEvents)
+const addEvents = (newEvents) => setDoc(doc(db, "events", newEvents.id), newEvents)
 
 export const useEventsMutation = () => {
     const queryClient = useQueryClient();

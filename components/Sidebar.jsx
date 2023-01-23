@@ -27,6 +27,7 @@ import HowToRegIcon from '@mui/icons-material/HowToReg';
 import NotesIcon from '@mui/icons-material/Notes';
 import LoginIcon from '@mui/icons-material/Login';
 import { useAuth } from "../utils/authContext";
+import PostAddIcon from '@mui/icons-material/PostAdd';
 const drawerWidth = 200;
 
 
@@ -403,6 +404,11 @@ const navItems = [
         text: "Add Diary",
         link: 'notes',
         icon: <TextSnippetOutlinedIcon />
+    },
+    {
+        text: "New Post",
+        link: 'post',
+        icon: <PostAddIcon />
     },
     {
         text: "Apps",

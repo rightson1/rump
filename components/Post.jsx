@@ -21,6 +21,10 @@ const Post = () => {
         }}
 
     >
+
+        <Typography>
+            Add Post
+        </Typography>
         <ListItem>
             <ListItemIcon>
                 <Avatar src="/girl.png" />
