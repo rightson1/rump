@@ -24,6 +24,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Collapse from '@mui/material/Collapse';
 import NewspaperOutlinedIcon from '@mui/icons-material/NewspaperOutlined';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
+import NotesIcon from '@mui/icons-material/Notes';
 import LoginIcon from '@mui/icons-material/Login';
 import { useAuth } from "../utils/authContext";
 const drawerWidth = 200;
@@ -399,6 +400,11 @@ const navItems = [
         icon: <AutoStoriesOutlinedIcon />
     },
     {
+        text: "Add Diary",
+        link: 'notes',
+        icon: <TextSnippetOutlinedIcon />
+    },
+    {
         text: "Apps",
     },
     {
@@ -406,11 +412,10 @@ const navItems = [
         link: 'chat',
         icon: <ChatBubbleOutline />,
     },
-
     {
-        text: "Diary",
-        link: 'notes',
-        icon: <TextSnippetOutlinedIcon />
+        text: "View Diary",
+        link: 'diary',
+        icon: <NotesIcon />,
     },
     {
         text: "Events",

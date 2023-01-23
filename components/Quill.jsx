@@ -8,7 +8,7 @@ const QuillNoSSRWrapper = dynamic(import('react-quill'), {
 import React from "react";
 import { useGlobalProvider } from "../utils/themeContext";
 
-const Editor = ({ setText }) => {
+const Editor = ({ setText, text }) => {
 
     const { colors, mode } = useGlobalProvider();
     const [state, setState] = React.useState({ value: null });
@@ -40,7 +40,7 @@ const Editor = ({ setText }) => {
                     borderBottomRightRadius: "10px",
                     color: "black",
                     overflow: 'scroll',
-                    maxHeight: '100px'
+                    minHeight: '50vh'
 
 
                 },
@@ -55,7 +55,7 @@ const Editor = ({ setText }) => {
             {/* <QuillToolbar /> */}
             <QuillNoSSRWrapper
                 theme="snow"
-                value={state.value}
+                value={text}
 
                 onChange={handleChange}
                 placeholder={"Write something and free your heart ♥"}

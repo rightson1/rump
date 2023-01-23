@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Card, CardContent, Divider, Grid, IconButton, InputBase, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper, TextField, Typography } from "@mui/material";
+import { Avatar, Box, Button, Card, CardContent, CircularProgress, Divider, Grid, IconButton, InputBase, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useGlobalProvider } from "../utils/themeContext";
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
@@ -6,108 +6,48 @@ import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import Drawer from '@mui/material/Drawer';
-
+import DoneIcon from '@mui/icons-material/Done';
+import StoryList from "../components/StoryList";
+import { db } from "../utils/firebase";
+import { doc, collection, addDoc } from 'firebase/firestore'
+import Info from "../components/Info";
+import { useStoryMutation } from "../utils/hooks/useStory";
 const Story = () => {
     const { colors, mode } = useGlobalProvider()
+    const [state, setState] = useState({
+        loading: false,
+        error: false,
+        open: false,
+    })
+    const [selected, setSelected] = useState(0)
     const [open, setOpen] = useState(false)
-    const StoryList = () => {
+    const { mutate: addStory, isLoading: loading, isError, isSuccess } = useStoryMutation()
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        setState({ ...state, loading: true })
+        const title = e.target.title.value
+        const story = e.target.story.value
+        const data = { title, story, selected }
+        addStory(data)
+        e.target.reset();
+
+    }
+    const ColorSelect = ({ color, index }) => {
+
         return <Box
+            onClick={() => setSelected(color)}
             sx={{
-
-                display: 'flex',
-                flexDirection: 'column',
-
-                height: '100%',
+                width: '30px',
+                height: '30px',
+                bgcolor: color,
+                borderRadius: '50%',
             }}
+            className={selected === color ? 'border-2 border-teal-900' : ''}
+
         >
-            <Box>
-                <Box
-                    sx={{
-                        py: 2,
-                        px: {
-                            xs: 1,
-                            md: 2
-                        }
-                    }}
-                >
-                    <Box
-                        component="input"
-
-                        sx={{
-                            width: "100%",
-                            outline: colors.teal[100],
-                            bgcolor: 'transparent',
-                            border: `1px solid ${colors.black[100]}`,
-                            '$:focus': {
-                                outline: colors.teal[100],
-                            }
-                        }}
-                        className="resize-none rounded-md p-2 focus:border-teal-500 focus:border-2 "
-                        placeholder="Search Story"
-                    />
-                </Box>
-            </Box>
-
-
-            <List sx={{ overflowY: 'scroll', py: '0rem !important', height: 'auto' }}
-                className="scrollbar scrollbar-thumb-gray-900 scrollbar-track-gray-100"
-            >
-                {
-                    [1, 2, 3, 4, 5, 6, 1, 2, 2, 3].map((item, index) => (
-                        <Box key={index}
-                            sx={{
-                                borderLeft: `2px solid ${colors.orange[500]}`,
-                                maxWidth: {
-                                    xs: '200px',
-                                    md: '100%'
-                                }
-
-                            }}
-                        >
-                            <ListItem disablePadding>
-                                <ListItemButton sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'flex-start',
-
-                                }}>
-                                    <Typography>Lorem, ipsum dolor....</Typography>
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'space-between',
-                                            width: '100%',
-                                        }}
-                                    >
-                                        <Typography
-                                            fontSize=".6rem"
-                                        >Story Title</Typography>
-                                        <IconButton
-                                            sx={{
-                                                width: '14px !important',
-                                                height: '14px !important',
-                                            }}
-                                        >
-                                            <DeleteIcon fontSize=".5rem" />
-                                        </IconButton>
-                                    </Box>
-
-                                </ListItemButton>
-                                <Divider />
-
-                            </ListItem>
-                            <Divider />
-                        </Box>
-                    ))
-                }
-
-            </List>
-
 
 
         </Box>
-
     }
     return <Box sx={{
         p: {
@@ -170,6 +110,8 @@ const Story = () => {
                 >
 
                     <Box
+                        component="form"
+                        onSubmit={handleSubmit}
                         sx={{
                             p: '1rem',
                             display: 'flex',
@@ -201,7 +143,9 @@ const Story = () => {
                                     alignSelf: 'flex-end',
                                     justifySelf: "flex-end"
                                 }}
-                            >Add Story</Button>
+                                type="submit"
+                            >{loading ? <CircularProgress /> : "Add Story"
+                                }</Button>
 
                         </Box>
                         <Divider />
@@ -222,6 +166,8 @@ const Story = () => {
                                     }
                                 }}
                                 className="resize-none rounded-md p-2 focus:border-teal-500 focus:border-2 "
+                                required
+                                name="title"
                                 placeholder="Enter Story Title"
                             />
                         </Box>
@@ -240,6 +186,8 @@ const Story = () => {
                             >Edit Story</Typography>
                             <Box
                                 component="textarea"
+                                required
+                                name="story"
                                 sx={{
                                     width: "100%",
                                     outline: colors.teal[100],
@@ -261,39 +209,13 @@ const Story = () => {
                             >Story Color</Typography>
                             <Box
                                 className="flex gap-1"
-                            >
-                                <Box sx={{
-                                    width: '30px',
-                                    height: '30px',
-                                    bgcolor: colors.teal[500],
-                                    borderRadius: '50%',
-                                }}>
+                            >{
+                                    [colors.teal[500], colors.yellow[500], colors.orange[500], colors.greenAccent[500]].map((color, index) => {
 
-                                </Box>
-                                <Box sx={{
-                                    width: '30px',
-                                    height: '30px',
-                                    bgcolor: colors.yellow[500],
-                                    borderRadius: '50%',
-                                }}>
+                                        return <ColorSelect color={color} key={index} value={index} />
+                                    })
+                                }
 
-                                </Box>
-                                <Box sx={{
-                                    width: '30px',
-                                    height: '30px',
-                                    bgcolor: colors.orange[500],
-                                    borderRadius: '50%',
-                                }}>
-
-                                </Box>
-                                <Box sx={{
-                                    width: '30px',
-                                    height: '30px',
-                                    bgcolor: colors.greenAccent[500],
-                                    borderRadius: '50%',
-                                }}>
-
-                                </Box>
                             </Box>
                         </Box>
                     </Box>
@@ -302,6 +224,7 @@ const Story = () => {
             </Grid>
 
         </Paper>
+        <Info type={isError ? 'Error' : 'Success'} opened={isError || isSuccess} />
     </Box>
 };
 Story.user = true

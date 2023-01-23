@@ -1,23 +1,33 @@
 import { Avatar, Box, Button, Card, CardContent, Divider, Grid, IconButton, InputBase, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper, TextField, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useGlobalProvider } from "../utils/themeContext";
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
-import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import CircularProgress from '@mui/material/CircularProgress';
 import Drawer from '@mui/material/Drawer';
 import Editor from "../components/Quill";
 import CloseIcon from '@mui/icons-material/Close';
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
+import { useAuth } from "../utils/authContext";
+import Info from "../components/Info";
+import { storage, db } from "../utils/firebase";
+import { doc, addDoc, collection } from 'firebase/firestore';
+import BlogList from "../components/BlogList";
 
 const Blog = () => {
     const { colors, mode } = useGlobalProvider()
+    const { user } = useAuth();
     const [file, setFile] = useState(null)
     const [title, setTitle] = useState('')
     const [progress, setProgress] = useState(0)
+
+
+
     const [state, setState] = useState({
         error: null,
         loading: false,
+        opened: false,
     });
     const [text, setText] = useState('')
 
@@ -31,118 +41,36 @@ const Blog = () => {
             const storageRef = ref(storage, `images/${Date.now()}-${file.name}`);
             const uploadTask = uploadBytesResumable(storageRef, file);
             uploadTask.on('state_changed', (snapshot) => {
-                const uploadProgress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                setProgress(uploadProgress)
+                let uploadProgress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+
             }, (error) => {
-                setState({ ...state, error: error.message });
+
+                setState({ ...state, error: true, loading: false, opened: true });
 
             }, () => {
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                    const data = { ...user, title, text, image: downloadURL }
+                    const docRef = collection(db, "blogs");
 
+                    addDoc(docRef, data).then(() => {
+                        setState({ ...state, error: false, loading: false, opened: true });
+                        setText('')
+                        setTitle('')
+                        setFile(null)
+                    }).catch((error) => {
+
+                        setState({ ...state, error: true, loading: false, opened: true });
+                    }
+                    );
+                }).catch((error) => {
+                    setState({ ...state, error: true, loading: false, opened: true });
                 })
             })
 
         }
 
     }
-    const BlogList = () => {
-        return <Box
-            sx={{
 
-                display: 'flex',
-                flexDirection: 'column', height: '100%',
-            }}
-        >
-
-            <Box>
-                <Box
-                    sx={{
-                        py: 2,
-                        px: {
-                            xs: 1,
-                            md: 2
-                        }
-                    }}
-                >
-                    <Box
-                        component="input"
-
-                        sx={{
-                            width: "100%",
-                            outline: colors.teal[100],
-                            bgcolor: 'transparent',
-                            border: `1px solid ${colors.black[100]}`,
-                            '$:focus': {
-                                outline: colors.teal[100],
-                            }
-                        }}
-                        className="resize-none rounded-md p-2 focus:border-teal-500 focus:border-2 "
-                        placeholder="Search blog"
-                    />
-                </Box>
-            </Box>
-
-
-            <List sx={{ overflowY: 'scroll', py: '0rem !important', height: 'auto' }}
-                className="scrollbar scrollbar-thumb-gray-900 scrollbar-track-gray-100"
-            >
-                {
-                    [1, 2, 3, 4, 5, 6, 1, 2, 2, 3].map((item, index) => (
-                        <Box key={index}
-                            sx={{
-                                borderLeft: `2px solid ${colors.orange[500]}`,
-                                maxWidth: {
-                                    xs: '200px',
-                                    md: '100%'
-                                }
-
-                            }}
-                        >
-                            <ListItem disablePadding>
-                                <ListItemButton sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'flex-start',
-
-                                }}>
-                                    <Typography>Lorem, ipsum dolor....</Typography>
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'space-between',
-                                            width: '100%',
-                                        }}
-                                    >
-                                        <Typography
-                                            fontSize=".6rem"
-                                        >30 days Ago</Typography>
-                                        <IconButton
-                                            sx={{
-                                                width: '14px !important',
-                                                height: '14px !important',
-                                            }}
-                                        >
-                                            <DeleteIcon fontSize=".5rem" />
-                                        </IconButton>
-                                    </Box>
-
-                                </ListItemButton>
-                                <Divider />
-
-                            </ListItem>
-                            <Divider />
-                        </Box>
-                    ))
-                }
-
-            </List>
-
-
-
-        </Box>
-
-    }
     return <Box sx={{
         p: {
             xs: '10px 10px',
@@ -155,54 +83,24 @@ const Blog = () => {
         {/* <Title title="Messanger" subtitle="Blog App" /> */}
         <Paper sx={{ my: '0px', borderRadius: { xs: '0', sm: '5px', md: '10px' }, background: 'transparent', overflow: 'hidden' }} elevation={10}>
 
-            <Drawer
-                anchor="left"
-                open={open}
-                onClose={() => setOpen(false)}
-                sx={{
-                    '& .MuiDrawer-paper': {
-                        p: '1rem',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '.3rem',
-                        background: colors.primary[400],
-                    },
-
-                }}
-            >
-                <BlogList />
-
-            </Drawer>
-
             <Grid container spacing={0} sx={{ height: '100%' }}>
                 <Grid item sx={{
                     display: {
-                        xs: 'none',
-                        sm: 'none',
+
                         md: 'block',
                     },
                     bgcolor: colors.primary[mode === 'dark' ? 600 : 800],
                     // bgcolor: colors.primary[300],
                     height: '100%',
-                    height: "110vh"
+                    height: "auto"
+
 
                 }}
-                    md={4}
+                    md={6}
+                    sm={12}
 
                 >
-                    <BlogList />
-
-                </Grid>
-                <Grid item
-                    xs={12} sm={12} md={8}
-
-                    sx={{
-                        background: colors.primary[mode === 'dark' ? 800 : 900],
-                        // background: colors.primary[600],
-                        height: "110vh"
-                    }}
-                >
-
+                    {/* <BlogList /> */}
                     <Box
                         sx={{
                             p: '1rem',
@@ -218,7 +116,7 @@ const Blog = () => {
                             justifyContent: 'space-between'
 
                         }}>
-                            <IconButton onClick={() => setOpen(true)}>
+                            {/* <IconButton onClick={() => setOpen(true)}>
                                 <MenuOutlinedIcon sx={{
                                     display: {
                                         xs: 'block',
@@ -228,25 +126,31 @@ const Blog = () => {
                                 }}
 
                                 />
-                            </IconButton>
-                            <Button
-                                onClick={() => handleSubmit()}
-                                sx={{
-                                    bgcolor: colors.teal[500] + '!important',
-                                    alignSelf: 'flex-end',
-                                    justifySelf: "flex-end"
-                                }}
-                            >Add Blog</Button>
+                            </IconButton> */}
 
+                            <Typography
+                                sx={{
+                                    color: colors.grey[100],
+                                    fontSize: '.8rem',
+                                    fontWeight: 'bold',
+                                }}
+                            >Create A New Blog</Typography>
                         </Box>
                         <Divider />
 
                         <Box display="flex" flexDirection="column" py={2}
                             sx={{ overflowY: 'auto', height: 'auto' }}
-                        >
+                        >    <Typography
+                            sx={{
+                                color: colors.grey[100],
+                                fontSize: '.8rem',
+                                fontWeight: 'bold',
+                            }}
+                        >Blog Title</Typography>
                             <Box
                                 component="input"
                                 onChange={(e) => setTitle(e.target.value)}
+                                value={title}
                                 sx={{
                                     width: "100%",
                                     outline: colors.teal[100],
@@ -273,12 +177,13 @@ const Blog = () => {
                                     fontWeight: 'bold',
                                 }}
                             >Featured Image</Typography>
-                            <TextField type="file"
+                            {!file && <TextField type="file"
                                 onChange={(e) => setFile(e.target.files[0])}
                                 id="file"
+                                fullWidth
                                 className=""
 
-                            />
+                            />}
                             <Box
 
                                 className="flex flex-col justify-center align-center w-full relative" sx={{
@@ -291,22 +196,83 @@ const Blog = () => {
                                             onClick={() => setFile(null)}
                                         >
                                             <CloseIcon
-                                                className="text-black border-black border-2 p-1 rounded-full"
+                                                className="text-white  border-black border-2 p-1 rounded-full text-3xl"
                                             /></IconButton>
                                         <Box
                                             component="img"
 
-                                            className="w-32 h-32 object-cover rounded-md cursor-pointer"
+                                            className="w-full h-auto max-h-[50vh] object-cover rounded-md cursor-pointer"
                                             src={file ? URL.createObjectURL(file) : "https://via.placeholder.com/150"}
 
 
                                         />
+                                        <CircularProgress
+
+                                            className="absolute top-1/2 translate-y-1/2 right-1/2 translate-x-1/2 z-10 font "
+                                            variant="determinate" value={progress} />
 
                                     </>
                                 }
                             </Box>
 
                         </Box>
+
+                    </Box>
+                </Grid>
+                <Grid item
+                    xs={12} sm={12} md={6}
+
+                    sx={{
+                        background: colors.primary[mode === 'dark' ? 800 : 900],
+                        // background: colors.primary[600],
+                        height: "auto"
+                    }}
+                >
+
+                    <Box
+                        sx={{
+                            p: '1rem',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '1rem',
+                            height: '100%',
+                        }}>
+
+                        <Box disablePadding sx={{
+                            display: 'flex',
+                            width: '100%',
+                            justifyContent: 'space-between',
+                            justifyContent: 'flex-end'
+
+                        }}>
+                            <Box
+                                sx={{
+                                    display: {
+                                        xs: 'none',
+                                        sm: 'none',
+                                        md: 'block',
+                                    },
+
+                                    alignItems: 'center',
+                                }}
+                            >
+                                {state.loading ? <Button><CircularProgress /></Button> :
+                                    <Button
+                                        onClick={() => handleSubmit()}
+                                        sx={{
+                                            bgcolor: colors.teal[500] + '!important',
+                                            alignSelf: 'flex-end',
+                                            justifySelf: "flex-end"
+                                        }}
+                                    >Add Blog</Button>
+                                }
+
+                            </Box>
+
+                        </Box>
+                        <Divider />
+
+
                         <Box width="100%" display="flex" sx={{
                             gap: '1rem',
                             alignItems: 'flex-start',
@@ -320,14 +286,35 @@ const Blog = () => {
                                     fontWeight: 'bold',
                                 }}
                             >New Blog</Typography>
-                            <Editor {...{ setText }} />
+                            <Editor {...{ setText, text }} />
+                            <Box
+                                sx={{
+                                    alignSelf: 'flex-end',
+                                    display: {
+                                        xs: 'block',
+                                        sm: 'block',
+                                        md: 'none',
+                                    }
+                                }}
+                            >
+                                {state.loading ? <Button><CircularProgress /></Button> :
+                                    <Button
+                                        onClick={() => handleSubmit()}
+                                        sx={{
+                                            bgcolor: colors.teal[500] + '!important',
+                                            alignSelf: 'flex-end',
+                                            justifySelf: "flex-end"
+                                        }}
+                                    >Add Blog</Button>
+                                }
 
+                            </Box>
                         </Box>
                     </Box>
                 </Grid>
 
             </Grid>
-
+            <Info type={state.error ? 'Error' : 'Success'} opened={state.opened} />
         </Paper>
     </Box>
 };

@@ -58,26 +58,10 @@ const User = () => {
             </Grid>
 
             <TextStepper />
-            <Grid item xs={12} md={7.8}
-                rowGap={2}
-                sx={{
-                    ml: {
-                        xs: 0,
-                        md: 1
-                    },
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    alignItems: "center",
 
-                }}
+            <Blogs />
 
-            >
-                <Blogs />
-                <Blogs />
-                <Blogs />
-                <Blogs />
-            </Grid>
+
 
 
 

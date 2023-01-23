@@ -6,7 +6,10 @@ import listPlugin from "@fullcalendar/list";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import { formatDate } from "fullcalendar";
 import Flex from "./Flex";
+import Skeleton from '@mui/material/Skeleton';
+import Stack from '@mui/material/Stack';
 import { useGlobalProvider } from "../utils/themeContext";
+import { useEventsDelete, useEventsMutation, useEventsQuery } from "../utils/hooks/useEvents";
 import {
     Box,
     List,
@@ -18,11 +21,14 @@ import {
 } from "@mui/material";
 const Calender = () => {
     const [currentEvents, setCurrentEvents] = React.useState([])
+    const { mutate, isSuccess: added, isError: failed } = useEventsMutation()
+    const { data, isLoading } = useEventsQuery()
+    const { mutate: deleteEvent, isSuccess, isError } = useEventsDelete()
+
     const { colors } = useGlobalProvider();
     const handleDateClick = (selected) => {
         const title = prompt("Enter Event Title");
         const calendarApi = selected.view.calendar;
-        console.log(selected)
         calendarApi.unselect();
         if (title) {
             calendarApi.addEvent({
@@ -43,7 +49,18 @@ const Calender = () => {
         }
     }
 
+    const handleEvent = (event) => {
+        const { id, title, startStr: start, endStr: end, allDay } = event.event;
+        const data = { id, title, start, end, allDay }
+        mutate(data)
 
+    }
+
+    const handleDelete = (event) => {
+        const { id } = event.event;
+        deleteEvent(id)
+
+    }
     return <Flex sx={{
         mt: "4rem",
         flexDirection: {
@@ -82,8 +99,8 @@ const Calender = () => {
             <Typography>Events</Typography>
             <List
             >
-                {currentEvents?.length > 0 ?
-                    currentEvents?.map((event) => (
+                {data?.length > 0 ?
+                    data?.map((event) => (
                         <ListItem key={event.id} sx={
                             {
                                 backgroundColor: colors.greenAccent[500],
@@ -107,8 +124,18 @@ const Calender = () => {
                         </ListItem>
                     )
                     ) :
+                    isLoading ?
 
-                    <Typography>No Events Added</Typography>
+                        <>
+                            {
+                                [1, 2, 3, 4, 5, 6, 7, 8, 9].map((item, index) => (
+                                    <Stack spacing={.5} key={index} mb="2rem">
+                                        <Skeleton variant="rounded" width="100%" height={60} />
+                                    </Stack>
+                                ))
+                            }
+                        </> :
+                        <Typography>No Events Added</Typography>
                 }
 
             </List>
@@ -210,23 +237,23 @@ const Calender = () => {
                 select={handleDateClick}
                 eventClick={handleEventClick}
                 eventsSet={(events) => setCurrentEvents(events)}
-                // eventAdd={handleEvent}
+                eventAdd={handleEvent}
                 eventChange={function () { }}
-                // eventRemove={handleDelete}
+                eventRemove={handleDelete}
                 longPressDelay={1}
-                // events={data}
-                initialEvents={[
-                    {
-                        id: "12315",
-                        title: "All-day event",
-                        date: "2022-09-14",
-                    },
-                    {
-                        id: "5123",
-                        title: "Timed event",
-                        date: "2022-09-28",
-                    },
-                ]}
+                events={data}
+            // initialEvents={[
+            //     {
+            //         id: "12315",
+            //         title: "All-day event",
+            //         date: "2022-09-14",
+            //     },
+            //     {
+            //         id: "5123",
+            //         title: "Timed event",
+            //         date: "2022-09-28",
+            //     },
+            // ]}
             />
 
         </Box>
