@@ -7,20 +7,53 @@ import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import Drawer from '@mui/material/Drawer';
 import Editor from "../components/Quill";
+import CloseIcon from '@mui/icons-material/Close';
+import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 
 const Blog = () => {
     const { colors, mode } = useGlobalProvider()
+    const [file, setFile] = useState(null)
+    const [title, setTitle] = useState('')
+    const [progress, setProgress] = useState(0)
+    const [state, setState] = useState({
+        error: null,
+        loading: false,
+    });
+    const [text, setText] = useState('')
+
     const [open, setOpen] = useState(false)
+    const handleSubmit = () => {
+        if (!text && !title) {
+            window.alert('Please enter all details')
+        } else {
+            setState({ ...state, loading: true });
+
+            const storageRef = ref(storage, `images/${Date.now()}-${file.name}`);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+            uploadTask.on('state_changed', (snapshot) => {
+                const uploadProgress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                setProgress(uploadProgress)
+            }, (error) => {
+                setState({ ...state, error: error.message });
+
+            }, () => {
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+
+                })
+            })
+
+        }
+
+    }
     const BlogList = () => {
         return <Box
             sx={{
 
                 display: 'flex',
-                flexDirection: 'column',
-
-                height: '100%',
+                flexDirection: 'column', height: '100%',
             }}
         >
+
             <Box>
                 <Box
                     sx={{
@@ -151,7 +184,7 @@ const Blog = () => {
                     bgcolor: colors.primary[mode === 'dark' ? 600 : 800],
                     // bgcolor: colors.primary[300],
                     height: '100%',
-                    height: "100vh"
+                    height: "110vh"
 
                 }}
                     md={4}
@@ -166,7 +199,7 @@ const Blog = () => {
                     sx={{
                         background: colors.primary[mode === 'dark' ? 800 : 900],
                         // background: colors.primary[600],
-                        height: "100vh"
+                        height: "110vh"
                     }}
                 >
 
@@ -197,6 +230,7 @@ const Blog = () => {
                                 />
                             </IconButton>
                             <Button
+                                onClick={() => handleSubmit()}
                                 sx={{
                                     bgcolor: colors.teal[500] + '!important',
                                     alignSelf: 'flex-end',
@@ -212,7 +246,7 @@ const Blog = () => {
                         >
                             <Box
                                 component="input"
-
+                                onChange={(e) => setTitle(e.target.value)}
                                 sx={{
                                     width: "100%",
                                     outline: colors.teal[100],
@@ -239,7 +273,38 @@ const Blog = () => {
                                     fontWeight: 'bold',
                                 }}
                             >Featured Image</Typography>
-                            <TextField type="file" />
+                            <TextField type="file"
+                                onChange={(e) => setFile(e.target.files[0])}
+                                id="file"
+                                className=""
+
+                            />
+                            <Box
+
+                                className="flex flex-col justify-center align-center w-full relative" sx={{
+                                    alignItems: 'center',
+                                }}>
+                                {file &&
+                                    <>
+                                        <IconButton
+                                            className="absolute -top-2 right-1/2 translate-x-1/2 z-10 font "
+                                            onClick={() => setFile(null)}
+                                        >
+                                            <CloseIcon
+                                                className="text-black border-black border-2 p-1 rounded-full"
+                                            /></IconButton>
+                                        <Box
+                                            component="img"
+
+                                            className="w-32 h-32 object-cover rounded-md cursor-pointer"
+                                            src={file ? URL.createObjectURL(file) : "https://via.placeholder.com/150"}
+
+
+                                        />
+
+                                    </>
+                                }
+                            </Box>
 
                         </Box>
                         <Box width="100%" display="flex" sx={{
@@ -255,7 +320,7 @@ const Blog = () => {
                                     fontWeight: 'bold',
                                 }}
                             >New Blog</Typography>
-                            <Editor />
+                            <Editor {...{ setText }} />
 
                         </Box>
                     </Box>

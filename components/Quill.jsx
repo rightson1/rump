@@ -8,11 +8,13 @@ const QuillNoSSRWrapper = dynamic(import('react-quill'), {
 import React from "react";
 import { useGlobalProvider } from "../utils/themeContext";
 
-const Editor = () => {
+const Editor = ({ setText }) => {
+
     const { colors, mode } = useGlobalProvider();
     const [state, setState] = React.useState({ value: null });
     const handleChange = value => {
         setState({ value });
+        setText(value)
     };
     return (
         <Box className="text-editor  w-full"

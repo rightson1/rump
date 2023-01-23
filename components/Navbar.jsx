@@ -116,7 +116,7 @@ const Navbar = () => {
                                 color: colors.black[200],
                                 textTransform: 'none'
                             }}>
-                                Hi,<Typography component="span" fontWeight="bold"> Janice</Typography>
+                                Hi,<Typography component="span" fontWeight="bold">{user?.name.split(" ")[0]}</Typography>
                             </Typography>
                         </Button>
 
