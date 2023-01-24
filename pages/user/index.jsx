@@ -53,8 +53,8 @@ const User = () => {
                 <Typography sx={{
                     fontWeight: "bold",
 
-                }}>Introduction</Typography>
-                <Typography>Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus, nihil corrupti. Nobis animi aperiam cupiditate dolores doloribus distinctio voluptas dolorum?</Typography>
+                }}>Changing Profile</Typography>
+                <Typography>You can change you profile pic by clicking on the avatar, then the introduction by clicking,</Typography>
             </Grid>
 
             <TextStepper />

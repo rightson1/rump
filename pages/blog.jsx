@@ -13,7 +13,6 @@ import { useAuth } from "../utils/authContext";
 import Info from "../components/Info";
 import { storage, db } from "../utils/firebase";
 import { doc, addDoc, collection } from 'firebase/firestore';
-import BlogList from "../components/BlogList";
 
 const Blog = () => {
     const { colors, mode } = useGlobalProvider()
@@ -35,7 +34,10 @@ const Blog = () => {
     const handleSubmit = () => {
         if (!text && !title) {
             window.alert('Please enter all details')
-        } else {
+        } if (!file) {
+            window.alert('Please select featured image')
+        }
+        else {
             setState({ ...state, loading: true });
 
             const storageRef = ref(storage, `images/${Date.now()}-${file.name}`);
@@ -49,7 +51,7 @@ const Blog = () => {
 
             }, () => {
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    const data = { ...user, title, text, image: downloadURL }
+                    const data = { ...user, title, text, image: downloadURL, createdAt: new Date() }
                     const docRef = collection(db, "blogs");
 
                     addDoc(docRef, data).then(() => {

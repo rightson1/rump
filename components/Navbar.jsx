@@ -3,7 +3,7 @@ import { useGlobalProvider } from "../utils/themeContext";
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Button from "@mui/material/Button";
-import { Avatar, Badge, InputBase, Typography } from '@mui/material';
+import { Avatar, Badge, InputBase, Tooltip, Typography } from '@mui/material';
 import { Search } from '@mui/icons-material';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -15,10 +15,13 @@ import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import Menu from "@mui/material/Menu";
+import Drawer from '@mui/material/Drawer';
 import MenuItem from "@mui/material/MenuItem";
 import Flex from "./Flex"
 import { useTheme } from "@mui/material";
 import { useAuth } from "../utils/authContext";
+import ArticleIcon from '@mui/icons-material/Article';
+import BlogList from "./BlogList";
 
 const Navbar = () => {
     const { colors, mode, dispatch, actionTypes, isMobile, open, setOpen, } = useGlobalProvider();
@@ -27,6 +30,7 @@ const Navbar = () => {
     const isOpen = Boolean(anchorEl);
     const handleClick = (event) => setAnchorEl(event.currentTarget);
     const handleClose = () => setAnchorEl(null);
+    const [close, setClose] = useState(false)
 
     return (
         <Box sx={{
@@ -39,6 +43,24 @@ const Navbar = () => {
             bgcolor: mode === "dark" ? colors.primary[800] : '#fcfcfc'
             // bgcolor: colors.primary[500]
         }}>
+
+            <Drawer
+                anchor="left"
+                open={close}
+                onClose={() => setClose(false)}
+                sx={{
+                    '& .MuiDrawer-paper': {
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '.3rem',
+                        background: colors.primary[400],
+                    },
+
+                }}
+            >
+                <BlogList />
+            </Drawer>
+
             <AppBar position="static" sx={{
                 background: 'transparent',
 
@@ -86,10 +108,13 @@ const Navbar = () => {
                             )}
                         </IconButton>
 
-                        <IconButton>
+                        <IconButton sx={{ display: { xs: 'block', md: 'none' } }}
+                            onClick={() => setClose(true)}
+                        >
                             <Badge color="secondary" variant="dot">
-                                <NotificationsOutlinedIcon sx={{ color: colors.black[200] }} />
-
+                                <Tooltip title="blogs">
+                                    <ArticleIcon sx={{ color: colors.black[200] }} />
+                                </Tooltip>
                             </Badge>
                         </IconButton>
                         <IconButton>

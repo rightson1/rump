@@ -5,21 +5,19 @@ import ShareIcon from '@mui/icons-material/Share';
 import { useGlobalProvider } from '../utils/themeContext';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import { useRouter } from 'next/router';
-import { useRepliesQuery } from '../utils/hooks/useReplies';
+
 import { format } from "timeago.js"
-export default function Replies({ id }) {
+import { useTweetsQuery } from '../utils/hooks/useTweet';
+export default function Tweet({ id }) {
     const router = useRouter()
-    const { data, isLoading } = useRepliesQuery(id);
+    const { data, isLoading } = useTweetsQuery()
     const { colors } = useGlobalProvider()
     return (
-        <Box
-
-        >
+        <List className="overflow-x-hidden  h-screen overflow-y-scroll " >
 
 
             {
                 data?.length > 0 ? data.map((item, index) => {
-
                     return <Box key={index}>
                         <ListItem >
                             <ListItemIcon>
@@ -39,14 +37,14 @@ export default function Replies({ id }) {
                         <Box ml={'30px'}>
                             <Box onClick={() => router.push(`/post/${item.id}`)}>
                                 <Typography>{item.text}</Typography>
-                                {item.image &&
-                                    <Box
-                                        component="img"
-                                        className="w-full h-[200px] object-cover md:h-[300px]"
-                                        src={item?.image}
-                                    />
 
-                                }
+                                <Box
+                                    component="img"
+                                    className="w-full h-[200px] object-cover"
+                                    src={item?.image}
+                                />
+
+
                             </Box>
                             <Box className="flex  justify-between align-center p-3">
 
@@ -127,11 +125,11 @@ export default function Replies({ id }) {
                     :
 
                     <Box className="flex justify-center items-center h-[200px]">
-                        <Typography>No replies yet</Typography>
+                        <Typography>No tweet yet</Typography>
                     </Box>
             }
 
-        </Box>
+        </List>
     )
 
 }

@@ -1,22 +1,25 @@
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { Avatar, Box, Button, Divider, ListItem, ListItemIcon, Paper, Typography, ListItemText, AvatarGroup, List, Tooltip } from "@mui/material";
+import { Avatar, Box, Button, Divider, ListItem, ListItemIcon, Skeleton, Paper, Typography, ListItemText, AvatarGroup, List, Tooltip } from "@mui/material";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ShareIcon from '@mui/icons-material/Share';
 import { useGlobalProvider } from '../utils/themeContext';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import { useRouter } from 'next/router';
+import { useTweetsQuery } from '../utils/hooks/useTweet';
+import { format } from "timeago.js"
 export default function Home() {
   const router = useRouter()
+  const { data, isLoading } = useTweetsQuery()
   const { colors } = useGlobalProvider()
   return (
     <Box
       className="h-[85vh] w-full flex flex-col items-center justify-center overflow-hidden"
     >
-      <List className="overflow-x-hidden  h-screen overflow-y-scroll scrollbar-none" >
+      <List className="overflow-x-hidden  h-screen overflow-y-scroll  w-full" >
 
         {
-          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item, index) => {
-            return <Box key={index}>
+          data?.length > 0 ? data.map((item, index) => {
+            return <Box key={index} onClick={() => router.push(`/post/${item.id}`)} className="curs">
               <ListItem >
                 <ListItemIcon>
                   <Avatar src={`https://i.pravatar.cc/150?u=${index}`} sx={{
@@ -26,20 +29,20 @@ export default function Home() {
                 </ListItemIcon>
                 <Box className="w-full flex justify-between items-center">
                   <ListItemText
-                    primary="Achsash Janice"
-                    secondary="@_janice"
+                    primary={item.name}
+                    secondary={`@${item.name.split(' ')[0]}`}
                   ></ListItemText>
                   <MoreHorizIcon />
                 </Box>
               </ListItem>
               <Box ml={'30px'}>
-                <Box onClick={() => router.push(`/post/${index}`)}>
-                  <Typography>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam excepturi consequuntur a. Minus, ex accusamus consectetur ullam id perferendis recusandae!</Typography>
-                  {index % 2 === 0 &&
+                <Box>
+                  <Typography>{item.text}</Typography>
+                  {item.image &&
                     <Box
                       component="img"
-                      className="w-full h-[200px] object-cover"
-                      src={`https://picsum.photos/id/${index + index * index / 2}/700/700`}
+                      className="w-full h-[200px] object-cover md:h-[300px]"
+                      src={item?.image}
                     />
 
                   }
@@ -102,14 +105,28 @@ export default function Home() {
                     <Typography
                       color={colors.grey[300]}
                       className="text-xs "
-                    >1 hour Ago</Typography>
+                    >{format(item?.createdAt.toDate())}</Typography>
 
                   </Box>
                 </Box>
               </Box>
               <Divider />
             </Box>
-          })
+          }) : isLoading ? (<>
+            {
+              [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item, index) => {
+                return <Box key={index} className="flex gap-2 p-3">
+                  <Skeleton variant="circular" width={"full"} height={30} />
+                  <Skeleton variant="text" width={"full"} />
+                </Box>
+              })
+            }
+          </>) : <>
+            <Box className="flex flex-col items-center justify-center h-full">
+              <Typography variant="h4" className="text-center">No Tweets Found</Typography>
+              <Button variant="contained" onClick={() => router.push('/user')}>Create Tweet</Button>
+            </Box>
+          </>
         }
 
       </List>

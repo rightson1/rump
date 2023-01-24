@@ -10,7 +10,7 @@ import Info from "../components/Info";
 import { storage, db } from "../utils/firebase";
 import { doc, addDoc, collection } from 'firebase/firestore';
 import CircularProgress from "@mui/material/CircularProgress";
-const Post = () => {
+const Comment = ({ id, comment, reply }) => {
     const handleState = (error) => {
         if (error) {
             setState({
@@ -38,7 +38,7 @@ const Post = () => {
         setLoading(true)
 
         if (file) {
-            const storageRef = ref(storage, `tweets/${file.name}`);
+            const storageRef = ref(storage, `posts/${id}/${file.name}`);
             const uploadTask = uploadBytesResumable(storageRef, file);
             uploadTask.on(
                 "state_changed",
@@ -63,13 +63,13 @@ const Post = () => {
                 () => {
                     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                         console.log("File available at", downloadURL);
-                        addDoc(collection(db, "tweets"), {
+                        addDoc(collection(db, "posts"), {
                             text,
                             image: downloadURL,
                             createdAt: new Date(),
                             email: user?.email,
                             name: user?.name,
-
+                            reply: id,
                         })
                     }).then(() => {
                         setLoading(false)
@@ -83,12 +83,12 @@ const Post = () => {
                 }
             );
         } else {
-            addDoc(collection(db, "tweets"), {
+            addDoc(collection(db, "posts"), {
                 text,
                 createdAt: new Date(),
                 email: user?.email,
                 name: user?.name,
-
+                reply: id,
             }).then(() => {
                 setLoading(false)
                 setFile(null)
@@ -104,11 +104,11 @@ const Post = () => {
         }
     }
 
-    return <Grid item xs={12} md={7.7} component={Paper}
+    return <Box item xs={12} md={7.7} component={Paper}
 
         sx={{
             p: 2,
-            backgroundColor: colors.primary[600],
+            backgroundColor: colors.primary[comment ? 600 : 900],
             borderRadius: "1rem",
             width: "100%",
             height: "100%",
@@ -122,7 +122,7 @@ const Post = () => {
     >
 
         <Typography>
-            New Post
+            {comment ? "Add Comment" : "Add Reply"}
         </Typography>
         <ListItem>
             <ListItemIcon>
@@ -135,7 +135,7 @@ const Post = () => {
                 sx={{
                     width: "100%",
                     outline: colors.teal[100],
-                    backgroundColor: colors.primary[600],
+                    backgroundColor: colors.primary[comment ? 600 : 900],
                     '$:focus': {
                         outline: colors.teal[100],
                     }
@@ -161,7 +161,7 @@ const Post = () => {
                     <Box
                         component="img"
 
-                        className="w-full h-auto max-h-[50vh] object-cover rounded-md cursor-pointer "
+                        className="w-full h-auto max-h-[50vh] object-cover rounded-md cursor-pointer"
                         src={file ? URL.createObjectURL(file) : "https://via.placeholder.com/150"}
 
 
@@ -215,13 +215,13 @@ const Post = () => {
                     color: colors.primary[600] + " !important",
                     borderRadius: "1rem",
                 }}>
-                Post
+                Comment
             </Button>
 
             }
         </Box>
         <Info opened={state.open} type={state.error ? 'Error' : 'Success'} />
-    </Grid>
+    </Box>
 };
 
-export default Post;
+export default Comment;
