@@ -3,7 +3,7 @@ import { useGlobalProvider } from "../utils/themeContext";
 import { Avatar, Box, Button, Card, CardContent, Divider, Grid, IconButton, InputBase, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper, TextField, Typography } from "@mui/material";
 import { useBlogsQuery } from "../utils/hooks/useBlogs"
 import { useRouter } from 'next/router';
-import Skeleton from '@mui/material';
+import Skeleton from '@mui/material/Skeleton';
 import { useState } from 'react';
 const BlogList = () => {
     const { colors, mode } = useGlobalProvider()
