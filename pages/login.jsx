@@ -105,7 +105,7 @@ const Register = () => {
                     gap: 2,
                     flexDirection: 'column',
                     width: {
-                        xm: '80vw',
+                        xs: '80vw',
                         sm: '70vw',
                         md: '400px'
                     },
