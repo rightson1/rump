@@ -1,5 +1,5 @@
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { Avatar, Box, Button, Divider, ListItem, ListItemIcon, Skeleton, Typography, ListItemText, AvatarGroup, List, Tooltip, IconButton } from "@mui/material";
+import { Avatar, Box, Button, Divider, ListItem, ListItemIcon, Skeleton, Typography, ListItemText, List, Tooltip, IconButton } from "@mui/material";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ShareIcon from '@mui/icons-material/Share';
 import { useGlobalProvider } from '../utils/themeContext';
