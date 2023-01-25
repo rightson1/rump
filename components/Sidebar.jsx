@@ -121,7 +121,7 @@ const Sidebar = () => {
                             {user?.name}
                         </Typography>
                         <Typography variant='h6' fontWeight="bold" mt="-10px" color={colors.greenAccent[400]}>
-                            {user.username}
+                            {user?.username}
                         </Typography>
 
                     </Box>

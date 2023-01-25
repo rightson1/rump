@@ -67,7 +67,7 @@ const Calender = () => {
 
     const handleEvent = (event) => {
         const { id, title, startStr: start, endStr: end, allDay } = event.event;
-        const data = { id, title, start, end, allDay, userId: user.id }
+        const data = { id, title, start, end, allDay, userId: user?.id }
         mutate(data)
 
     }

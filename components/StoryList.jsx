@@ -18,7 +18,7 @@ const StoryList = () => {
     }
     useEffect(() => {
         if (!user) return;
-        const q = query(collection(db, "stories"), where("userId", "==", user.id));
+        const q = query(collection(db, "stories"), where("userId", "==", user?.id));
         const unsubscribe = onSnapshot(q, snapshot => {
             setStory(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })))
             setLoading(false)
