@@ -42,8 +42,8 @@ export default function Replies({ id }) {
                 replies?.length > 0 ? replies.map((item, index) => {
 
                     return <Box key={index}>
-                        <ListItem onClick={() => router.push(`/post/${item.id}`)}>
-                            <ListItemIcon>
+                        <ListItem>
+                            <ListItemIcon onClick={() => router.push(`/user/${item.userId}`)}>
                                 <Avatar src={item.photoUrl} sx={{
                                     width: 30,
                                     height: 30,
@@ -147,9 +147,17 @@ export default function Replies({ id }) {
                     (<>
                         {
                             [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item, index) => {
-                                return <Box key={index} className="flex gap-2 p-3">
-                                    <Skeleton variant="circular" width={30} height={30} />
-                                    <Skeleton variant="text" width={300} />
+                                return <Box key={index} className="flex gap-2 p-3 flex-col">
+                                    <Box className="flex">
+                                        <Skeleton variant="circular" width={30} height={30} />
+                                        <Box className="flex flex-col ml-2">
+                                            <Skeleton variant="text" width={100} />
+                                            <Skeleton variant="text" width={100} />
+                                        </Box>
+
+                                    </Box>
+                                    <Skeleton variant="text" className='w-screen' height={70} />
+
                                 </Box>
                             })
                         }

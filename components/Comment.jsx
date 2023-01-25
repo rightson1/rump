@@ -70,6 +70,7 @@ const Comment = ({ id, comment, reply }) => {
                             email: user?.email,
                             name: user?.name,
                             reply: id,
+                            userId: user?.id,
                             photoUrl: user?.photoUrl ? user.photoUrl : '',
                         })
                     }).then(() => {
@@ -89,6 +90,7 @@ const Comment = ({ id, comment, reply }) => {
                 createdAt: new Date(),
                 email: user?.email,
                 photoUrl: user?.photoUrl ? user.photoUrl : '',
+                userId: user?.id,
                 name: user?.name,
                 reply: id,
             }).then(() => {

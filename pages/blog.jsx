@@ -13,7 +13,7 @@ import { useAuth } from "../utils/authContext";
 import Info from "../components/Info";
 import { storage, db } from "../utils/firebase";
 import { doc, addDoc, collection } from 'firebase/firestore';
-
+import Title from "../components/Title";
 const Blog = () => {
     const { colors, mode } = useGlobalProvider()
     const { user } = useAuth();
@@ -82,7 +82,7 @@ const Blog = () => {
     }}>
 
 
-        {/* <Title title="Messanger" subtitle="Blog App" /> */}
+        <Title title="Blog" subtitle="New Blog" />
         <Paper sx={{ my: '0px', borderRadius: { xs: '0', sm: '5px', md: '10px' }, background: 'transparent', overflow: 'hidden' }} elevation={10}>
 
             <Grid container spacing={0} sx={{ height: '100%' }}>

@@ -25,7 +25,6 @@ export default function Home() {
   const [tweets, setTweets] = useState([]);
 
   useEffect(() => {
-
     const q = collection(db, "tweets");
     const unsubscribe = onSnapshot(q, snapshot => {
 

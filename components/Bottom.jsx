@@ -7,13 +7,14 @@ import { CircularProgress, IconButton, List, ListItem, ListItemButton, ListItemI
 import { useTweetsDelete } from "../utils/hooks/useTweet";
 import PersonIcon from '@mui/icons-material/Person';
 import { useRepliesDelete } from "../utils/hooks/useReplies";
+import { useRouter } from "next/router";
 import Info from "./Info";
 const Bottom = ({ close, setClose, tweet, reply }) => {
     const { colors } = useGlobalProvider();
     const { user } = useAuth();
     const { mutate, isLoading, isError, isSuccess } = useTweetsDelete();
     const { mutate: deleteReply, isLoading: loading, isError: error, isSuccess: success } = useRepliesDelete()
-
+    const router = useRouter();
     const handleDelete = (id) => {
         if (reply) {
             deleteReply(id)
@@ -56,7 +57,9 @@ const Bottom = ({ close, setClose, tweet, reply }) => {
             </List>
         </>) : (<>
             <List py={2}>
-                <ListItem disablePadding >
+                <ListItem disablePadding
+                    onClick={() => router.push(`/user/${tweet.userId}`)}
+                >
                     <ListItemButton className="flex justify-center items-center">
                         <IconButton >
                             <PersonIcon />

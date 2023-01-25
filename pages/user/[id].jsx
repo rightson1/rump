@@ -24,8 +24,9 @@ const Id = () => {
     const [value, setValue] = React.useState(0);
     const { data } = useTweetsQuery();
     const tweets = useMemo(() => {
+        if (!user) return;
         return data?.filter((tweet) => tweet.email === user.email)
-    }, [data])
+    }, [data, user])
 
 
     return <Box my={2} sx={{

@@ -13,6 +13,7 @@ import { doc, collection, addDoc } from 'firebase/firestore'
 import Info from "../components/Info";
 import { useStoryMutation } from "../utils/hooks/useStory";
 import { useAuth } from "../utils/authContext";
+import Title from "../components/Title";
 const Story = () => {
     const { colors, mode } = useGlobalProvider()
     const { user } = useAuth()
@@ -60,7 +61,7 @@ const Story = () => {
     }}>
 
 
-        {/* <Title title="Messanger" subtitle="Story App" /> */}
+        <Title title="Story" subtitle=" New Story" />
         <Paper sx={{ my: '0px', borderRadius: { xs: '0', sm: '5px', md: '10px' }, background: 'transparent', overflow: 'hidden' }} elevation={10}>
 
             <Drawer

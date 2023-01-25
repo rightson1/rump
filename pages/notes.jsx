@@ -13,6 +13,7 @@ import { doc, collection, addDoc } from 'firebase/firestore'
 import Info from "../components/Info";
 import { useNotesDelete, useNotesMutation, useNotesQuery } from "../utils/hooks/useNotes";
 import { useAuth } from "../utils/authContext";
+import Title from "../components/Title";
 const Note = () => {
     const { mutate, isSuccess: added, isError: failed, isLoading: loading } = useNotesMutation()
 
@@ -67,9 +68,9 @@ const Note = () => {
             md: '25px',
         }
     }}>
+        <Title title="Notes" subtitle="Add To Diary" />
 
 
-        {/* <Title title="Messanger" subtitle="Note App" /> */}
         <Paper sx={{ my: '0px', borderRadius: { xs: '0', sm: '5px', md: '10px' }, background: 'transparent', overflow: 'hidden' }} elevation={10}>
 
             <Drawer
