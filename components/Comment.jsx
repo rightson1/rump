@@ -70,6 +70,7 @@ const Comment = ({ id, comment, reply }) => {
                             email: user?.email,
                             name: user?.name,
                             reply: id,
+                            photoUrl: user?.photoUrl ? user.photoUrl : '',
                         })
                     }).then(() => {
                         setLoading(false)
@@ -87,6 +88,7 @@ const Comment = ({ id, comment, reply }) => {
                 text,
                 createdAt: new Date(),
                 email: user?.email,
+                photoUrl: user?.photoUrl ? user.photoUrl : '',
                 name: user?.name,
                 reply: id,
             }).then(() => {

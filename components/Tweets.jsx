@@ -10,7 +10,7 @@ import { format } from "timeago.js"
 import Bottom from './Bottom';
 import { useGetAllReplies } from '../utils/hooks/useReplies';
 import { useAuth } from '../utils/authContext';
-export default function TweetList({ data, isLoading }) {
+export default function TweetList({ data, isLoading, user }) {
     const router = useRouter()
     const { colors } = useGlobalProvider()
     const [close, setClose] = useState(false)
@@ -45,11 +45,11 @@ export default function TweetList({ data, isLoading }) {
                                         if (current?.email == item?.email) {
                                             router.push('/user')
                                         } else {
-                                            router.push(`/user/${item?.id}`)
+                                            router.push(`/user/${item?.userId}`)
                                         }
                                     }}
                                 >
-                                    <Avatar src={`https://i.pravatar.cc/150?u=${index}`} sx={{
+                                    <Avatar src={item.photoUrl} sx={{
                                         width: 30,
                                         height: 30,
                                     }} />
@@ -160,9 +160,17 @@ export default function TweetList({ data, isLoading }) {
                     }) : isLoading ? (<>
                         {
                             [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item, index) => {
-                                return <Box key={index} className="flex gap-2 p-3">
-                                    <Skeleton variant="circular" className='w-screen' height={30} />
-                                    <Skeleton variant="text" width={"full"} className='w-screen' />
+                                return <Box key={index} className="flex gap-2 p-3 flex-col">
+                                    <Box className="flex">
+                                        <Skeleton variant="circular" width={30} height={30} />
+                                        <Box className="flex flex-col ml-2">
+                                            <Skeleton variant="text" width={100} />
+                                            <Skeleton variant="text" width={100} />
+                                        </Box>
+
+                                    </Box>
+                                    <Skeleton variant="text" className='w-screen' height={70} />
+
                                 </Box>
                             })
                         }

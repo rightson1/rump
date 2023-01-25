@@ -42,9 +42,9 @@ export default function Replies({ id }) {
                 replies?.length > 0 ? replies.map((item, index) => {
 
                     return <Box key={index}>
-                        <ListItem >
+                        <ListItem onClick={() => router.push(`/post/${item.id}`)}>
                             <ListItemIcon>
-                                <Avatar src={`https://i.pravatar.cc/150?u=${index}`} sx={{
+                                <Avatar src={item.photoUrl} sx={{
                                     width: 30,
                                     height: 30,
                                 }} />
@@ -65,7 +65,7 @@ export default function Replies({ id }) {
                             </Box>
                         </ListItem>
                         <Box ml={'30px'}>
-                            <Box onClick={() => router.push(`/post/${item.id}`)}>
+                            <Box >
                                 <Typography>{item.text}</Typography>
                                 {item.image &&
                                     <Box

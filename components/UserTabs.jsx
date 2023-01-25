@@ -43,11 +43,11 @@ const UserTabs = ({ value, setValue }) => {
 
             }}
         >
-            <Tab label="User" {...a11yProps(0)} sx={{
+            <Tab label="Status & Blogs" {...a11yProps(0)} sx={{
                 color: `${value === 0 && colors.teal[200]} !important`
 
             }} />
-            <Tab label="Status" {...a11yProps(1)} sx={{
+            <Tab label="Tweets" {...a11yProps(1)} sx={{
                 color: `${value === 1 && colors.teal[200]} !important`
             }} />
 

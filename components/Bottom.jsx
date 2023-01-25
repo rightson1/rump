@@ -20,7 +20,9 @@ const Bottom = ({ close, setClose, tweet, reply }) => {
         } else {
             mutate(id);
         }
-
+        setTimeout(() => {
+            setClose(false)
+        }, [1000])
 
     }
 

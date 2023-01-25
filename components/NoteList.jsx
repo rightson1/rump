@@ -29,7 +29,7 @@ const NoteList = ({ setCurrentNote }) => {
         return () => {
             unsubscribe()
         }
-    }, [])
+    }, [user])
     return <Box
 
         sx={{

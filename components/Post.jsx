@@ -69,6 +69,8 @@ const Post = () => {
                             createdAt: new Date(),
                             email: user?.email,
                             name: user?.name,
+                            userId: user?.id,
+                            photoUrl: user?.photoUrl ? user.photoUrl : '',
 
                         }).then(() => {
                             setLoading(false)
@@ -90,6 +92,8 @@ const Post = () => {
                 createdAt: new Date(),
                 email: user?.email,
                 name: user?.name,
+                userId: user?.id,
+                photoUrl: user?.photoUrl ? user.photoUrl : '',
 
             }).then(() => {
                 setLoading(false)
