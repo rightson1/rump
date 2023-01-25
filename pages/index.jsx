@@ -11,7 +11,7 @@ import { format } from "timeago.js"
 import Bottom from '../components/Bottom';
 import { useGetAllReplies } from '../utils/hooks/useReplies';
 import { useAuth } from '../utils/authContext';
-import TweetList from '../components/tweetList';
+import TweetList from '../components/TweetList';
 export default function Home() {
   const router = useRouter()
   const { data, isLoading } = useTweetsQuery()
