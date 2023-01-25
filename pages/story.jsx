@@ -12,8 +12,10 @@ import { db } from "../utils/firebase";
 import { doc, collection, addDoc } from 'firebase/firestore'
 import Info from "../components/Info";
 import { useStoryMutation } from "../utils/hooks/useStory";
+import { useAuth } from "../utils/authContext";
 const Story = () => {
     const { colors, mode } = useGlobalProvider()
+    const { user } = useAuth()
     const [state, setState] = useState({
         loading: false,
         error: false,
@@ -27,7 +29,7 @@ const Story = () => {
         setState({ ...state, loading: true })
         const title = e.target.title.value
         const story = e.target.story.value
-        const data = { title, story, selected }
+        const data = { title, story, selected, userId: user?.id }
         addStory(data)
         e.target.reset();
 

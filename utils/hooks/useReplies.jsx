@@ -34,19 +34,18 @@ export const useRepliesUpdate = () => {
         },
     });
 }
-const deleteReplies = (id) => deleteDoc(doc(db, "replies", id))
+const deleteReplies = (id) => {
+    console.log(id)
+    return deleteDoc(doc(db, "posts", id))
+}
 export const useRepliesDelete = () => {
+
     const queryClient = useQueryClient();
 
     return useMutation(deleteReplies, {
         onSuccess: (data) => {
-            queryClient.refetchQueries("replies", getReplies);
-            queryClient.setQueryData("replies", (oldData) => {
-                return {
-                    ...oldData,
-                    data: oldData.data.filter((item) => item.id !== data),
-                };
-            });
+            queryClient.refetchQueries("posts", getReplies);
+
         },
     });
 };
@@ -60,7 +59,7 @@ const getReplies = (id) => getDocs(query(collection(db, "posts"), where("reply",
 })
 export const useRepliesQuery = (id) => {
 
-    return useQuery(["replies", id], () => getReplies(id), {
+    return useQuery(["posts", id], () => getReplies(id), {
         fetchOnMount: false,
         staleTime: 300000,
         cacheTime: 300000,
@@ -69,3 +68,23 @@ export const useRepliesQuery = (id) => {
         select: (data) => data.data,
     });
 };
+
+const getAll = (id) => getDocs(collection(db, "posts")).then((data) => {
+    const replies = [];
+    data?.forEach((doc) => {
+        replies.push({ id: doc.id, ...doc.data() });
+    });
+    return { data: replies };
+})
+export const useGetAllReplies = (id) => {
+
+    return useQuery("posts", getAll, {
+        fetchOnMount: false,
+        staleTime: 300000,
+        cacheTime: 300000,
+        fetchOnMount: false,
+
+        select: (data) => data.data,
+    });
+};
+

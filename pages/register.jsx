@@ -8,6 +8,8 @@ import { auth } from "../utils/firebase";
 import { useRegister } from "../utils/hooks/useRegister";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useRouter } from "next/router";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../utils/firebase";
 const Register = () => {
     const [values, setValues] = useState(null);
     const router = useRouter()
@@ -24,7 +26,18 @@ const Register = () => {
                 const credential = GoogleAuthProvider.credentialFromResult(result);
                 const token = credential.accessToken;
                 const user = result.user;
-                mutate({ name: user.displayName, email: user.email })
+                const q = query(collection(db, "users"), where("email", "==", user.email));
+                getDocs(q).then((res) => {
+                    const [admins, ...rest] = res.docs.map((doc) => {
+                        return { id: doc.id, ...doc.data() }
+                    })
+                    if (admins) {
+                        return;
+                    } else {
+                        mutate({ name: user.displayName, email: user.email, username: `@_${user.displayName?.split(" ")[0]}` })
+                    }
+                })
+
 
 
             }).catch((e) => {
@@ -48,6 +61,7 @@ const Register = () => {
         const password = values.password.trim();
         const name = values.name.trim();
         createUserWithEmailAndPassword(auth, email, password).then(() => {
+            const data = { email: email.trim(), name: name.trim(), username: `@_${name?.split(" ")[0]}` }
             mutate(values)
             setLoading(false)
         }).catch(() => {

@@ -28,6 +28,7 @@ export default function Rightbar() {
     const { data, isLoading } = useBlogsQuery();
     const [search, setSearch] = useState("")
     const Blog = ({ item, index }) => {
+
         return (<Box key={index}
             onClick={() => router.push(`/article/${item?.id}`)}
         >

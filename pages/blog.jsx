@@ -51,7 +51,7 @@ const Blog = () => {
 
             }, () => {
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    const data = { ...user, title, text, image: downloadURL, createdAt: new Date() }
+                    const data = { name: user?.name, email: user?.email, title, text, image: downloadURL, createdAt: new Date() }
                     const docRef = collection(db, "blogs");
 
                     addDoc(docRef, data).then(() => {

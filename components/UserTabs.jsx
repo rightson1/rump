@@ -6,10 +6,11 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { useGlobalProvider } from '../utils/themeContext';
+import { Grid } from '@mui/material';
 
-const UserTabs = () => {
+const UserTabs = ({ value, setValue }) => {
     const { colors } = useGlobalProvider()
-    const [value, setValue] = React.useState(0);
+
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -19,7 +20,7 @@ const UserTabs = () => {
             'aria-controls': `simple-tabpanel-${index}`,
         };
     }
-    return <Box component={Paper}
+    return <Grid item xs={12} component={Paper}
         sx={{
 
             backgroundColor: colors.primary[600],
@@ -51,7 +52,7 @@ const UserTabs = () => {
             }} />
 
         </Tabs>
-    </Box>
+    </Grid>
 };
 
 export default UserTabs;

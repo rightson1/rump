@@ -70,12 +70,14 @@ const Post = () => {
                             email: user?.email,
                             name: user?.name,
 
+                        }).then(() => {
+                            setLoading(false)
+                            setFile(null)
+                            setText("")
+                            handleState(false)
+                        }).catch((err) => {
+                            handleState(true)
                         })
-                    }).then(() => {
-                        setLoading(false)
-                        setFile(null)
-                        setText("")
-                        handleState(false)
                     }).catch((err) => {
                         handleState(true)
                     })

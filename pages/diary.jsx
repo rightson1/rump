@@ -12,6 +12,7 @@ import { db } from "../utils/firebase";
 import { doc, collection, addDoc } from 'firebase/firestore'
 import Info from "../components/Info";
 import { useNotesDelete, useNotesMutation, useNotesQuery, useNotesUpdate } from "../utils/hooks/useNotes";
+import { useAuth } from "../utils/authContext";
 const Note = () => {
     const { mutate: mutateUpdate, isSuccess: updated, isError: failedUpdate, isLoading: loadingUpdate } = useNotesUpdate()
     const [currentNote, setCurrentNote] = useState({
@@ -21,6 +22,7 @@ const Note = () => {
         id: null,
     })
     const { colors, mode } = useGlobalProvider()
+    const { user } = useAuth();
     const [state, setState] = useState({
         loading: false,
         error: false,
@@ -30,7 +32,7 @@ const Note = () => {
     const [open, setOpen] = useState(false)
     const handleSubmit = (e) => {
         e.preventDefault()
-
+        const data = { ...currentNote, userId: user?.id }
         mutateUpdate(currentNote)
 
         e.target.reset()

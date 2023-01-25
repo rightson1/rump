@@ -12,18 +12,22 @@ import Comment from '../../components/Comment';
 import { useMemo } from 'react';
 import { format } from "timeago.js"
 import { useTweetsQuery } from '../../utils/hooks/useTweet';
-export default function Home() {
+const Tweet = () => {
     const router = useRouter()
     const { data, isLoading } = useTweetsQuery()
     const { id } = useRouter().query
 
     const item = useMemo(() => data?.find(item => item?.id === id), [data, id])
-    console.log(item)
 
     const { colors } = useGlobalProvider()
-    return (<Box
-        className="h-[85vh] w-full overflow-hidden"
-    >
+
+    return <Box sx={{
+        p: {
+            xs: '10px 10px',
+            sm: '10px 10px',
+            md: '25px',
+        }
+    }}>
         <Box className="flex justify-between items-center pr-3">
             <IconButton
                 onClick={() => router.back()} >
@@ -32,7 +36,7 @@ export default function Home() {
             <Title title="Tweet" />
 
         </Box>
-        <Box className="overflow-x-hidden  h-screen overflow-y-scroll scrollbar-none" >
+        <Paper sx={{ my: '0px', borderRadius: { xs: '0', sm: '5px', md: '10px' }, background: 'transparent', overflow: 'hidden' }} elevation={10}>
             {
                 item ? (
                     <Box >
@@ -127,6 +131,15 @@ export default function Home() {
                             </Box>
                         </Box>
                         <Divider />
+                        <Typography
+                            className="px-2 font-bold my-4 text-center" sx={{ color: colors.redAccent[500] }}>Comment</Typography>
+                        <Comment id={id} />
+                        <div className="mt-5"></div>
+                        <Divider />
+                        <Typography
+                            className="px-2 font-bold my-4 text-center" sx={{ color: colors.greenAccent[500] }}>Comments</Typography>
+
+                        <Replies id={id} />
                     </Box>
                 ) : isLoading ? (<>
                     {
@@ -146,16 +159,8 @@ export default function Home() {
             }
 
 
-            <Box className="flex  m-3  flex-col">
-                <Typography
-                    className='font-bold'>Replies</Typography>
-                <Comment id={id} reply={true} />
-                <Replies id={id} />
-            </Box>
-        </Box>
-
+        </Paper>
     </Box>
-    )
+};
 
-}
-
+export default Tweet;

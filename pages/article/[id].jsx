@@ -38,7 +38,7 @@ const Chat = () => {
                     width="100%"
                     height="500px"
 
-                /> : (<Paper
+                /> : blog ? (<Paper
                     key={blog.id}
                     sx={{
                         backgroundColor: colors.primary[600],
@@ -103,13 +103,35 @@ const Chat = () => {
 
                         </Box>
                     </Box>
-                    <Divider />`
-                    <Typography className="px-2 font-bold">Comments</Typography>
+                    <Divider />
+                    <Typography
+                        className="px-2 font-bold my-4 text-center" sx={{ color: colors.redAccent[500] }}>Comment</Typography>
                     <Comment id={id} comment={true} />
+                    <div className="mt-5"></div>
+                    <Divider />
+                    <Typography
+                        className="px-2 font-bold my-4 text-center" sx={{ color: colors.greenAccent[500] }}>Comments</Typography>
 
                     <Replies id={id} />
                 </Paper>
-                )
+                ) : (<Box>
+                    <Box
+                        className="w-full h-full flex justify-center items-center flex-col"
+                    >
+                        <Box
+                            component="img"
+                            className="w-[200px] h-[200px] mx-auto"
+                            src="/robot.gif"
+                        />
+                        <Typography
+                            sx={{ color: colors.orange[500] }}
+                            className="text-center text-xl"
+                        >
+                            Blog Not Found
+                        </Typography>
+                    </Box>
+
+                </Box>)
             }
         </Paper>
     </Box>

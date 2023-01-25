@@ -24,7 +24,7 @@ const Comment = ({ id, comment, reply }) => {
             })
         }
     }
-    const { colors } = useGlobalProvider()
+    const { colors, mode } = useGlobalProvider()
     const [state, setState] = React.useState({
         open: false,
         error: false,
@@ -104,15 +104,17 @@ const Comment = ({ id, comment, reply }) => {
         }
     }
 
-    return <Box item xs={12} md={7.7} component={Paper}
+    return <Box item
+        elevation={mode == "dark" ? 10 : 1}
+        component={Paper}
 
         sx={{
             p: 2,
             backgroundColor: colors.primary[comment ? 600 : 900],
             borderRadius: "1rem",
-            width: "100%",
+            width: "auto",
             height: "100%",
-            ml: {
+            mx: {
                 xs: 0,
                 md: 2
 

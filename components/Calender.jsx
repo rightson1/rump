@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import FullCalendar from '@fullcalendar/react' // must go before plugins
 import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
 import interactionPlugin from "@fullcalendar/interaction" // needed for dayClick
@@ -9,6 +9,8 @@ import Flex from "./Flex";
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import { useGlobalProvider } from "../utils/themeContext";
+import { collection, getDocs, addDoc, deleteDoc, doc, setDoc, query, where, onSnapshot } from "firebase/firestore";
+import { db } from "../utils/firebase";
 import { useEventsDelete, useEventsMutation, useEventsQuery } from "../utils/hooks/useEvents";
 import {
     Box,
@@ -19,13 +21,16 @@ import {
     Typography,
 
 } from "@mui/material";
+import { useAuth } from "../utils/authContext";
 const Calender = () => {
     const [currentEvents, setCurrentEvents] = React.useState([])
     const { mutate, isSuccess: added, isError: failed } = useEventsMutation()
-    const { data, isLoading } = useEventsQuery()
     const { mutate: deleteEvent, isSuccess, isError } = useEventsDelete()
-
+    const [loading, setLoading] = useState(true)
+    const { user } = useAuth()
     const { colors } = useGlobalProvider();
+    const [events, setEvents] = useState([])
+
     const handleDateClick = (selected) => {
         const title = prompt("Enter Event Title");
         const calendarApi = selected.view.calendar;
@@ -42,6 +47,17 @@ const Calender = () => {
             })
         }
     }
+    useEffect(() => {
+        const id = user?.id
+        if (!id) return;
+        const q = query(collection(db, "events"), where("userId", "==", id));
+        const unsubscribe = onSnapshot(q, snapshot => {
+
+            setEvents(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })))
+            setLoading(false)
+        })
+        return () => unsubscribe();
+    }, [user?.id])
 
     const handleEventClick = (selected) => {
         if (window.confirm(`Are you sure you want to delete ${selected.event.title}`)) {
@@ -51,7 +67,7 @@ const Calender = () => {
 
     const handleEvent = (event) => {
         const { id, title, startStr: start, endStr: end, allDay } = event.event;
-        const data = { id, title, start, end, allDay }
+        const data = { id, title, start, end, allDay, userId: user.id }
         mutate(data)
 
     }
@@ -99,8 +115,8 @@ const Calender = () => {
             <Typography>Events</Typography>
             <List
             >
-                {data?.length > 0 ?
-                    data?.map((event) => (
+                {events?.length > 0 ?
+                    events?.map((event) => (
                         <ListItem key={event.id} sx={
                             {
                                 backgroundColor: colors.greenAccent[500],
@@ -124,7 +140,7 @@ const Calender = () => {
                         </ListItem>
                     )
                     ) :
-                    isLoading ?
+                    loading ?
 
                         <>
                             {
@@ -241,7 +257,7 @@ const Calender = () => {
                 eventChange={function () { }}
                 eventRemove={handleDelete}
                 longPressDelay={1}
-                events={data}
+                events={events}
             // initialEvents={[
             //     {
             //         id: "12315",

@@ -1,24 +1,45 @@
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { Avatar, Box, Button, Divider, ListItem, ListItemIcon, Paper, Typography, ListItemText, AvatarGroup, List, Tooltip, Skeleton } from "@mui/material";
+import { Avatar, Box, Button, Divider, ListItem, ListItemIcon, Paper, Typography, ListItemText, AvatarGroup, List, Tooltip, Skeleton, IconButton } from "@mui/material";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ShareIcon from '@mui/icons-material/Share';
 import { useGlobalProvider } from '../utils/themeContext';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import { useRouter } from 'next/router';
-import { useRepliesQuery } from '../utils/hooks/useReplies';
+import { useGetAllReplies, useRepliesQuery } from '../utils/hooks/useReplies';
 import { format } from "timeago.js"
+import { useState, useEffect } from 'react';
+import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { db } from '../utils/firebase';
+import Bottom from './Bottom';
 export default function Replies({ id }) {
     const router = useRouter()
     const { data, isLoading } = useRepliesQuery(id);
+    const { data: tweets } = useGetAllReplies()
     const { colors } = useGlobalProvider()
+    const [replies, setReplies] = useState([])
+
+    const [tweet, setTweet] = useState();
+    const [close, setClose] = useState(false)
+
+    useEffect(() => {
+        if (!id) return;
+
+        const q = query(collection(db, "posts"), where("reply", "==", id));
+        const unsubscribe = onSnapshot(q, snapshot => {
+
+            setReplies(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })))
+        })
+        return () => unsubscribe();
+    }, [id])
     return (
         <Box
 
         >
 
+            <Bottom {...{ tweet, setClose, close, reply: true }} />
 
             {
-                data?.length > 0 ? data.map((item, index) => {
+                replies?.length > 0 ? replies.map((item, index) => {
 
                     return <Box key={index}>
                         <ListItem >
@@ -33,7 +54,14 @@ export default function Replies({ id }) {
                                     primary={item.name}
                                     secondary={format(item.createdAt.toDate())}
                                 ></ListItemText>
-                                <MoreHorizIcon />
+                                <IconButton
+                                    onClick={() => {
+                                        setTweet(item)
+                                        setClose(true)
+                                    }}
+                                >
+                                    <MoreHorizIcon />
+                                </IconButton>
                             </Box>
                         </ListItem>
                         <Box ml={'30px'}>
@@ -101,7 +129,9 @@ export default function Replies({ id }) {
                                         <Typography
                                             color={colors.grey[300]}
                                             className="text-xs "
-                                        >10 comments</Typography>
+                                        >  {tweets?.filter(tweet => {
+                                            return tweet.reply === item?.id
+                                        }).length}</Typography>
                                     </Box>
                                     <Typography
                                         color={colors.grey[300]}
@@ -135,4 +165,3 @@ export default function Replies({ id }) {
     )
 
 }
-

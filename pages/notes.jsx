@@ -1,5 +1,5 @@
 import { Avatar, Box, Button, Card, CardContent, CircularProgress, Divider, Grid, IconButton, InputBase, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper, TextField, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useGlobalProvider } from "../utils/themeContext";
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
@@ -12,13 +12,19 @@ import { db } from "../utils/firebase";
 import { doc, collection, addDoc } from 'firebase/firestore'
 import Info from "../components/Info";
 import { useNotesDelete, useNotesMutation, useNotesQuery } from "../utils/hooks/useNotes";
+import { useAuth } from "../utils/authContext";
 const Note = () => {
     const { mutate, isSuccess: added, isError: failed, isLoading: loading } = useNotesMutation()
 
-    const { data, isLoading } = useNotesQuery()
+
     const { mutate: deleteNote, isSuccess, isError } = useNotesDelete()
-    console.log(data)
+    const { user } = useAuth()
     const { colors, mode } = useGlobalProvider()
+    const { data, isLoading, refetch } = useNotesQuery(user?.id)
+    useEffect(() => {
+        refetch()
+    }, user)
+
     const [state, setState] = useState({
         loading: false,
         error: false,
@@ -31,7 +37,7 @@ const Note = () => {
         setState({ ...state, loading: true })
         const title = e.target.title.value
         const note = e.target.note.value
-        const data = { title, note, selected }
+        const data = { title, note, selected, userId: user.id }
         mutate(data)
         e.target.reset()
 
@@ -81,7 +87,7 @@ const Note = () => {
 
                 }}
             >
-                <NoteList data={data} />
+                <NoteList />
 
             </Drawer>
 

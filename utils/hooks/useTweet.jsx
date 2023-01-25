@@ -27,12 +27,12 @@ export const useTweetsDelete = () => {
     return useMutation(deleteTweets, {
         onSuccess: (data) => {
             queryClient.refetchQueries("tweets", getTweets);
-            queryClient.setQueryData("tweets", (oldData) => {
-                return {
-                    ...oldData,
-                    data: oldData.data.filter((item) => item.id !== data),
-                };
-            });
+            // queryClient.setQueryData("tweets", (oldData) => {
+            //     return {
+            //         ...oldData,
+            //         data: oldData.data.filter((item) => item.id !== data),
+            //     };
+            // });
         },
     });
 };

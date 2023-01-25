@@ -2,16 +2,34 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { useGlobalProvider } from "../utils/themeContext";
 import { Avatar, Box, Button, Card, CardContent, CircularProgress, Divider, Grid, IconButton, InputBase, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper, TextField, Typography } from "@mui/material";
 import { useNotesQuery, useNotesDelete } from '../utils/hooks/useNotes';
-
-
+import { useEffect, useState } from 'react';
+import { collection, getDocs, addDoc, deleteDoc, doc, setDoc, query, where, onSnapshot } from "firebase/firestore";
+import { useAuth } from '../utils/authContext';
+import { db } from '../utils/firebase';
 const NoteList = ({ setCurrentNote }) => {
 
     const { colors, mode } = useGlobalProvider()
     const { data } = useNotesQuery()
     const { mutate: deleteNote, isLoading } = useNotesDelete()
+    const { user } = useAuth();
+    const [loading, setLoading] = useState(true)
+    const [notes, setNotes] = useState([])
     const handleDelete = (id) => {
         window.confirm("Are you sure you want to delete this note?") && deleteNote(id)
     }
+
+    useEffect(() => {
+        if (!user) return;
+        const q = query(collection(db, "notes"), where("userId", "==", user.id));
+        const unsubscribe = onSnapshot(q, snapshot => {
+
+            setNotes(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })))
+            setLoading(false)
+        })
+        return () => {
+            unsubscribe()
+        }
+    }, [])
     return <Box
 
         sx={{
@@ -55,7 +73,7 @@ const NoteList = ({ setCurrentNote }) => {
             className="scrollbar scrollbar-thumb-gray-900 scrollbar-track-gray-100"
         >
             {
-                data?.map((item, index) => (
+                notes?.map((item, index) => (
                     <Box key={index}
                         onClick={() => {
                             setCurrentNote && setCurrentNote(item)
@@ -101,7 +119,7 @@ const NoteList = ({ setCurrentNote }) => {
                                             }
                                         }
                                     >
-                                        {isLoading ?
+                                        {loading ?
                                             <CircularProgress />
                                             : <DeleteIcon fontSize="1rem" />
                                         }

@@ -405,11 +405,7 @@ const navItems = [
         link: 'notes',
         icon: <TextSnippetOutlinedIcon />
     },
-    {
-        text: "New Post",
-        link: 'post',
-        icon: <PostAddIcon />
-    },
+
     {
         text: "Apps",
     },

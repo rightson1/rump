@@ -9,12 +9,12 @@ export const useBlogsMutation = () => {
     return useMutation(addBlogs, {
         onSuccess: (data) => {
             queryClient.refetchQueries("blogs", getBlogs);
-            queryClient.setQueryData("blogs", (oldData) => {
-                return {
-                    ...oldData,
-                    data: [...oldData.data, data.data],
-                };
-            });
+            // queryClient.setQueryData("blogs", (oldData) => {
+            //     return {
+            //         ...oldData,
+            //         data: [...oldData.data, data.data],
+            //     };
+            // });
         },
     });
 };
@@ -27,19 +27,19 @@ export const useBlogsDelete = () => {
     return useMutation(deleteBlogs, {
         onSuccess: (data) => {
             queryClient.refetchQueries("blogs", getBlogs);
-            queryClient.setQueryData("blogs", (oldData) => {
-                return {
-                    ...oldData,
-                    data: oldData.data.filter((item) => item.id !== data),
-                };
-            });
+            // queryClient.setQueryData("blogs", (oldData) => {
+            //     return {
+            //         ...oldData,
+            //         data: oldData.data.filter((item) => item.id !== data),
+            //     };
+            // });
         },
     });
 };
 const getBlogs = () => getDocs(collection(db, "blogs")).then((data) => {
     const blogs = [];
     data.forEach((doc) => {
-        blogs.push({ id: doc.id, ...doc.data() });
+        blogs.push({ ...doc.data(), id: doc.id, });
     });
     return { data: blogs };
 })

@@ -40,9 +40,9 @@ export default function Info({ opened, type }) {
         <div>
             <Snackbar
                 open={open}
-                autoHideDuration={6000}
+                autoHideDuration={2000}
                 onClose={handleClose}
-
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             >
                 <Alert onClose={handleClose} sx={{ width: '100%' }}
                     severity={type === "Error" ? "error" : "success"}

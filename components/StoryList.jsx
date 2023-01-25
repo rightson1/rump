@@ -2,17 +2,31 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { useGlobalProvider } from "../utils/themeContext";
 import { Avatar, Box, Button, Card, CardContent, CircularProgress, Divider, Grid, IconButton, InputBase, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper, TextField, Typography } from "@mui/material";
 import { useStoryQuery, useStoryDelete } from '../utils/hooks/useStory';
-
-
+import { collection, getDocs, addDoc, deleteDoc, doc, setDoc, query, where, onSnapshot } from "firebase/firestore";
+import { useEffect, useState } from 'react';
+import { useAuth } from '../utils/authContext';
+import { db } from '../utils/firebase';
 const StoryList = () => {
     const { colors, mode } = useGlobalProvider()
     const { data, isLoading } = useStoryQuery();
     const { mutate: deleteStory, isLoading: deleteLoading } = useStoryDelete()
+    const [loading, setLoading] = useState(true)
+    const [story, setStory] = useState([])
+    const { user } = useAuth();
     const handleDelete = (id) => {
         window.confirm("Are you sure you want to delete this story?") && deleteStory(id)
     }
-
-
+    useEffect(() => {
+        if (!user) return;
+        const q = query(collection(db, "stories"), where("userId", "==", user.id));
+        const unsubscribe = onSnapshot(q, snapshot => {
+            setStory(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })))
+            setLoading(false)
+        })
+        return () => {
+            unsubscribe()
+        }
+    }, [])
     return <Box
         sx={{
 
@@ -55,7 +69,7 @@ const StoryList = () => {
             className="scrollbar scrollbar-thumb-gray-900 scrollbar-track-gray-100"
         >
             {
-                data?.map((item, index) => (
+                story?.map((item, index) => (
                     <Box key={index}
                         sx={{
                             borderLeft: `2px solid ${colors.orange[500]}`,

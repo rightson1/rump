@@ -1,5 +1,5 @@
 import { db } from "../firebase";
-import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, addDoc, deleteDoc, doc, setDoc, query, where, onSnapshot } from "firebase/firestore";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 const addNotes = (newNotes) => addDoc(collection(db, "notes"), newNotes)
@@ -9,15 +9,11 @@ export const useNotesMutation = () => {
     return useMutation(addNotes, {
         onSuccess: (data) => {
             queryClient.refetchQueries("notes", getNotes);
-            queryClient.setQueryData("notes", (oldData) => {
-                return {
-                    ...oldData,
-                    data: [...oldData.data, data.data],
-                };
-            });
+
         },
     });
 };
+
 
 const updateNotes = (newNotes) => updateDoc(doc(db, "notes", newNotes.id), newNotes)
 export const useNotesUpdate = () => {
@@ -25,12 +21,7 @@ export const useNotesUpdate = () => {
     return useMutation(updateNotes, {
         onSuccess: (data) => {
             queryClient.refetchQueries("notes", getNotes);
-            queryClient.setQueryData("notes", (oldData) => {
-                return {
-                    ...oldData,
-                    data: [...oldData.data, data.data],
-                };
-            });
+
         },
     });
 }
@@ -41,24 +32,20 @@ export const useNotesDelete = () => {
     return useMutation(deleteNotes, {
         onSuccess: (data) => {
             queryClient.refetchQueries("notes", getNotes);
-            queryClient.setQueryData("notes", (oldData) => {
-                return {
-                    ...oldData,
-                    data: oldData.data.filter((item) => item.id !== data),
-                };
-            });
+
         },
     });
 };
-const getNotes = () => getDocs(collection(db, "notes")).then((data) => {
+const getNotes = (id) => getDocs(query(collection(db, "notes"), where("userId", "==", id))).then((data) => {
     const notes = [];
     data.forEach((doc) => {
         notes.push({ id: doc.id, ...doc.data() });
     });
     return { data: notes };
 })
-export const useNotesQuery = () => {
-    return useQuery("notes", getNotes, {
+export const useNotesQuery = (id) => {
+    console.log(id)
+    return useQuery("notes", () => getNotes(id), {
         fetchOnMount: false,
         staleTime: 300000,
         select: (data) => data.data,
