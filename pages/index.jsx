@@ -11,7 +11,7 @@ import { format } from "timeago.js"
 import Bottom from '../components/Bottom';
 import { useGetAllReplies } from '../utils/hooks/useReplies';
 import { useAuth } from '../utils/authContext';
-import TweetList from '../components/TweetList';
+import TweetList from '../components/Tweets';
 export default function Home() {
   const router = useRouter()
   const { data, isLoading } = useTweetsQuery()
@@ -25,14 +25,14 @@ export default function Home() {
   //   return <Bottom setClose={setClose} close={close} tweet={tweet} >
 
   //   </Bottom>
-}
-return (
-  <Box
-    className="h-[85vh] w-full flex flex-col items-center justify-center overflow-hidden"
-  >
-    <TweetList {...{ data, user }} />
-  </Box>
-)
+  // }
+  return (
+    <Box
+      className="h-[85vh] w-full flex flex-col items-center justify-center overflow-hidden"
+    >
+      <TweetList {...{ data, user }} />
+    </Box>
+  )
 
 }
 

@@ -11,7 +11,7 @@ import { useBlogsQuery } from "../../utils/hooks/useBlogs";
 import { useAuth } from "../../utils/authContext";
 import Into from "../../components/Into";
 import UserTabs from "../../components/UserTabs";
-import TweetList from "../../components/TweetList";
+import TweetList from "../../components/Tweets";
 import { useTweetsQuery } from "../../utils/hooks/useTweet";
 
 const User = () => {
