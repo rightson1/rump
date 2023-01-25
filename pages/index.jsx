@@ -21,18 +21,18 @@ export default function Home() {
   const [tweet, setTweet] = useState();
   const { user } = useAuth();
 
-  const BottomHandle = () => {
-    return <Bottom setClose={setClose} close={close} tweet={tweet} >
+  // const BottomHandle = () => {
+  //   return <Bottom setClose={setClose} close={close} tweet={tweet} >
 
-    </Bottom>
-  }
-  return (
-    <Box
-      className="h-[85vh] w-full flex flex-col items-center justify-center overflow-hidden"
-    >
-      <TweetList {...{ data, user }} />
-    </Box>
-  )
+  //   </Bottom>
+}
+return (
+  <Box
+    className="h-[85vh] w-full flex flex-col items-center justify-center overflow-hidden"
+  >
+    <TweetList {...{ data, user }} />
+  </Box>
+)
 
 }
 
