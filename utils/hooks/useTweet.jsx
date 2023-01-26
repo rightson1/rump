@@ -45,8 +45,8 @@ const getTweets = () => getDocs(collection(db, "tweets")).then((data) => {
 })
 export const useTweetsQuery = () => {
     return useQuery("tweets", getTweets, {
-        fetchOnMount: false,
-        staleTime: 300000,
+
+
         select: (data) => data.data,
     });
 };

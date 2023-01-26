@@ -89,7 +89,7 @@ const Comment = ({ id, comment, reply }) => {
                 text,
                 createdAt: new Date(),
                 email: user?.email,
-                photoUrl: user?.photoUrl ? user.photoUrl : '',
+                photoUrl: user?.photoUrl ? user?.photoUrl : '',
                 userId: user?.id,
                 name: user?.name,
                 reply: id,

@@ -20,7 +20,7 @@ const NoteList = ({ setCurrentNote }) => {
 
     useEffect(() => {
         if (!user) return;
-        const q = query(collection(db, "notes"), where("userId", "==", user.id));
+        const q = query(collection(db, "notes"), where("userId", "==", user?.id));
         const unsubscribe = onSnapshot(q, snapshot => {
 
             setNotes(snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id })))

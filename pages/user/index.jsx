@@ -20,7 +20,7 @@ const User = () => {
     const [value, setValue] = React.useState(0);
     const { data } = useTweetsQuery();
     const tweets = useMemo(() => {
-        return data?.filter((tweet) => tweet.email === user.email)
+        return data?.filter((tweet) => tweet?.email === user.email)
     }, [data])
 
 

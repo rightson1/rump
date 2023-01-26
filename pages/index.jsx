@@ -23,7 +23,11 @@ export default function Home() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [tweets, setTweets] = useState([]);
-
+  // useEffect(() => {
+  //   window.oncancel(() => {
+  //     console.log("cancel")
+  //   })
+  // }, [user])
   useEffect(() => {
     const q = collection(db, "tweets");
     const unsubscribe = onSnapshot(q, snapshot => {

@@ -1,49 +1,62 @@
-import { Avatar, Box, Card, CardContent, Divider, Grid, IconButton, InputBase, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper, TextField, Typography } from "@mui/material";
+import { Avatar, Box, Card, CardContent, Divider, Grid, IconButton, Button, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
+import CircularProgress from "@mui/material";
 import { useGlobalProvider } from "../utils/themeContext";
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import Drawer from '@mui/material/Drawer';
-
+import ChatInput from "../components/ChatInput";
+import ContactList from "../components/ContactList";
+import Messages from "../components/Messages";
+import { useEffect } from "react";
+import { useAuth } from "../utils/authContext";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../utils/firebase";
 const Chat = () => {
     const { colors, mode } = useGlobalProvider()
     const [open, setOpen] = useState(false)
-    const ContactList = () => {
-        return <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '1rem',
-                height: '100%',
-            }}
-        >
-            <Box>   <TextField label="Search Contact" fullWidth
+    const [current, setCurrent] = useState(null)
+    const { user } = useAuth()
+
+    useEffect(() => {
+        const handleBeforeUnload = (e) => {
+            console.log("rada")
+            const docRef = doc(db, "users", user.id)
+            updateDoc(docRef, {
+                online: user.online === false ? true : false
+            }).then((res) => {
+                console.log(res)
+            }).catch((e) => {
+                console.log(e)
+            })
+            e.preventDefault();
+            e.returnValue = '';
+
+        }
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [user?.id]);
+    //...
+    useEffect(() => {
+        const handleVisibilityChange = (event) => {
+            if (document.visibilityState === "hidden") {
+                const docRef = doc(db, "users", user.id)
+                updateDoc(docRef, {
+                    online: user.online === false ? true : false
+                }).then((res) => {
+                    console.log('rada')
+                }).catch((e) => {
+                    console.log(e)
+                })
+            }
+        }
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    }, [user?.id]);
 
 
-            /></Box>
 
-            <List sx={{ overflowY: 'scroll', py: '1rem', height: 'auto' }}>
-                {
-                    [1, 2, 3, 4, 5, 6, 1, 2, 2, 3].map((item, index) => (<ListItem key={index} disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                <Avatar src="avatar1.jpeg" />
-                            </ListItemIcon>
-                            <ListItemText primary="Rightson Tole" secondary="chari.rightson@gmail.com" />
-
-                        </ListItemButton>
-
-                    </ListItem>
-                    ))
-                }
-
-            </List>
-
-
-
-        </Box>
-    }
     return <Box sx={{
         p: {
             xs: '10px 10px',
@@ -68,7 +81,7 @@ const Chat = () => {
 
                 }}
             >
-                <ContactList />
+                <ContactList {...{ current, setCurrent }} />
 
             </Drawer>
 
@@ -87,7 +100,7 @@ const Chat = () => {
                     md={4}
 
                 >
-                    <ContactList />
+                    <ContactList {...{ current, setCurrent }} />
                 </Grid>
                 <Grid item
                     xs={12} sm={12} md={8}
@@ -98,117 +111,79 @@ const Chat = () => {
                         height: "85vh"
                     }}
                 >
+                    {!current ?
+                        <>
+                            <ListItem disablePadding>
+                                <IconButton onClick={() => setOpen(true)}>
+                                    <MenuOutlinedIcon sx={{
+                                        display: {
+                                            xs: 'block',
+                                            sm: 'block',
+                                            md: 'none',
+                                        }
+                                    }}
 
-                    <Box
-                        sx={{
-                            padding: '1rem',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '1rem',
-                            height: '100%',
-                        }}>
-
-                        <ListItem disablePadding>
-                            <IconButton onClick={() => setOpen(true)}>
-                                <MenuOutlinedIcon sx={{
-                                    display: {
-                                        xs: 'block',
-                                        sm: 'block',
-                                        md: 'none',
-                                    }
-                                }}
-
+                                    />
+                                </IconButton>
+                            </ListItem>
+                            <Divider />
+                            <Box
+                                className="w-full h-full flex justify-center items-center flex-col"
+                            >
+                                <Box
+                                    component="img"
+                                    className="w-[200px] h-[200px] mx-auto"
+                                    src="/robot.gif"
                                 />
-                            </IconButton>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    <Avatar src="/avatar2.jpeg" />
-                                </ListItemIcon>
-                                <ListItemText primary="Rightson Tole" secondary="Online" />
-
-                            </ListItemButton>
-
-                        </ListItem>
-                        <Divider />
-
-                        <Box display="flex" flexDirection="column" py={2}
-                            sx={{ overflowY: 'auto', height: 'auto' }}
-                        >
-                            {
-                                [0, 0, 0].map((item, index) => (<>
-                                    <ListItem sx={{
-                                        alignSelf: "self-start",
-                                        maxWidth: '80%',
-                                    }}>
-
-                                        <Box
-                                            sx={{
-                                                padding: '.3rem',
-                                                background: colors.orange[200],
-                                                borderRadius: '10px',
-                                                display: 'flex',
-                                                flexDirection: 'column',
-                                                alignItems: 'center'
-
-                                            }}>
-                                            <Typography
-                                            >
-                                                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                                            </Typography>
-                                            <img src="/profile.jpg" className="w-full obje h-[100px]" />
-                                        </Box>
-
-                                    </ListItem>
-                                    <ListItem sx={{
-                                        alignSelf: "self-end",
-                                        maxWidth: '80%',
-                                        width: 'auto',
-                                        display: 'flex',
-                                        justifyContent: 'flex-end',
-                                        background: colors.yellow[500],
-                                        borderRadius: '10px',
-
-                                    }}>
-
-                                        <Typography sx={{
-                                            textAlign: 'center'
-                                        }}>
-                                            Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                                        </Typography>
-
-                                    </ListItem>
-                                </>))
-                            }
-                        </Box>
-                        <Box width="100%" display="flex" sx={{
-                            gap: '1rem',
-                            alignItems: 'center',
-
-                        }}>
-                            <Box display="flex" gap={1}>
-                                <ImageOutlinedIcon sx={{ fontSize: "2rem" }} />
-
+                                <Typography
+                                    sx={{ color: colors.orange[500] }}
+                                    className="text-center text-xl"
+                                >
+                                    Select A Contact To Chat
+                                </Typography>
                             </Box>
-                            <Box sx={{
-                                flexGrow: 1,
+
+                        </>
+
+
+                        : <Box
+                            sx={{
+                                padding: '1rem',
                                 display: 'flex',
                                 flexDirection: 'column',
+                                gap: '1rem',
+                                height: '100%',
                             }}>
-                                <textarea className={`flex-grow-1 w-[100%]  resize-none rounded-md outline-none focus:border-[2px] focus:border-[rgba(255,255,0,.3)]`} style={{
-                                    backgroundColor: colors.primary[mode === 'dark' ? 600 : 800],
-                                    color: colors.grey[mode === 'dark' ? 500 : 800],
-                                    // backgroundColor: colors.primary[500],
-                                    // color: colors.grey[500],
 
-                                }} />
-                            </Box>
-                            <Box display="flex" gap={1}>
+                            <ListItem disablePadding>
+                                <IconButton onClick={() => setOpen(true)}>
+                                    <MenuOutlinedIcon sx={{
+                                        display: {
+                                            xs: 'block',
+                                            sm: 'block',
+                                            md: 'none',
+                                        }
+                                    }}
 
-                            </Box>
+                                    />
+                                </IconButton>
+                                <ListItemButton>
+                                    <ListItemIcon>
+                                        <Avatar src={current.photoUrl} />
+                                    </ListItemIcon>
+                                    <ListItemText primary={current.name} secondary="Online" />
 
+                                </ListItemButton>
 
+                            </ListItem>
+                            <Divider />
+
+                            <Messages />
+                            <ChatInput {...{ current }} />
                         </Box>
-                    </Box>
+                    }
+
+
                 </Grid>
 
             </Grid>

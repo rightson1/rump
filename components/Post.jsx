@@ -70,7 +70,7 @@ const Post = () => {
                             email: user?.email,
                             name: user?.name,
                             userId: user?.id,
-                            photoUrl: user?.photoUrl ? user.photoUrl : '',
+                            photoUrl: user?.photoUrl ? user?.photoUrl : '',
 
                         }).then(() => {
                             setLoading(false)
@@ -93,7 +93,7 @@ const Post = () => {
                 email: user?.email,
                 name: user?.name,
                 userId: user?.id,
-                photoUrl: user?.photoUrl ? user.photoUrl : '',
+                photoUrl: user?.photoUrl ? user?.photoUrl : '',
 
             }).then(() => {
                 setLoading(false)

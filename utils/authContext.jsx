@@ -2,7 +2,7 @@
 import { createContext, useContext, useEffect } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth"
 import { auth } from "./firebase";
-import { collection, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { collection, query, where, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { useState } from "react";
 import { db } from "./firebase";
 import { useRouter } from "next/router";
@@ -26,6 +26,12 @@ export const AuthProvider = ({ children }) => {
                         return { id: doc.id, ...doc.data() }
                     })
                     if (admins) {
+                        const docRef = doc(db, "users", admins.id)
+                        updateDoc(docRef, {
+                            online: true,
+                        }).then(() => {
+                            console.log("online")
+                        })
                         setUser(admins)
                     } else {
                         setUser(null)
@@ -43,7 +49,17 @@ export const AuthProvider = ({ children }) => {
         }
     }, [])
 
+
     const logout = async () => {
+        console.log(user)
+        const docRef = doc(db, "users", user.id)
+        updateDoc(docRef, {
+            online: false
+        }).then(() => {
+            console.log("offline")
+        }).catch((e) => {
+            console.log(e)
+        })
         setAdmin(null);
         await signOut(auth).then(() => {
             router.push('/login')
