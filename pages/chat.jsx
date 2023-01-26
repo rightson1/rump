@@ -1,4 +1,4 @@
-import { Avatar, Box, Card, CardContent, Divider, Grid, IconButton, Button, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper, TextField, Typography } from "@mui/material";
+import { Avatar, Box, Card, CardContent, Divider, Grid, IconButton, Button, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper, TextField, Typography, Skeleton } from "@mui/material";
 import React, { useState } from "react";
 import CircularProgress from "@mui/material";
 import { useGlobalProvider } from "../utils/themeContext";
@@ -64,7 +64,7 @@ const Chat = () => {
             md: '25px',
         }
     }}>
-
+        <Skeleton width="100vw" height={50}>Under development</Skeleton>
         <Paper sx={{ my: '0px', borderRadius: { xs: '0', sm: '5px', md: '10px' }, background: 'transparent', overflow: 'hidden' }} elevation={10}>
 
             <Drawer

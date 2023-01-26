@@ -113,6 +113,8 @@ const Calender = () => {
 
             }}  >
             <Typography>Events</Typography>
+            <Typography color={{ color: colors.orange[500] }} className="italic text-[10px]">Long date to add event</Typography>
+
             <List
             >
                 {events?.length > 0 ?

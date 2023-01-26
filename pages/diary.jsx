@@ -9,11 +9,12 @@ import Drawer from '@mui/material/Drawer';
 import DoneIcon from '@mui/icons-material/Done';
 import NoteList from "../components/NoteList";
 import { db } from "../utils/firebase";
-import { doc, collection, addDoc } from 'firebase/firestore'
+import { doc, collection, addDoc, updateDoc } from 'firebase/firestore'
 import Info from "../components/Info";
 import { useNotesDelete, useNotesMutation, useNotesQuery, useNotesUpdate } from "../utils/hooks/useNotes";
 import { useAuth } from "../utils/authContext";
 import Title from "../components/Title";
+import ArrowLeftSharp from "@mui/icons-material/ArrowLeftSharp";
 const Note = () => {
     const { mutate: mutateUpdate, isSuccess: updated, isError: failedUpdate, isLoading: loadingUpdate } = useNotesUpdate()
     const [currentNote, setCurrentNote] = useState({
@@ -34,7 +35,7 @@ const Note = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
         const data = { ...currentNote, userId: user?.id }
-        mutateUpdate(currentNote)
+        mutateUpdate(data)
 
         e.target.reset()
 
@@ -137,16 +138,27 @@ const Note = () => {
                                 justifyContent: 'space-between'
 
                             }}>
-                                <IconButton onClick={() => setOpen(true)}>
-                                    <MenuOutlinedIcon sx={{
-                                        display: {
-                                            xs: 'block',
-                                            sm: 'block',
-                                            md: 'none',
+                                <IconButton
+
+                                    onClick={() => setOpen(true)}
+                                    sx={{
+                                        visibility: {
+                                            xs: 'visible',
+                                            sm: 'visible',
+                                            md: 'hidden',
                                         }
                                     }}
+                                >
+                                    {/* <MenuOutlinedIcon sx={{
+                                    display: {
+                                        xs: 'block',
+                                        sm: 'block',
+                                        md: 'none',
+                                    }
+                                }}
 
-                                    />
+                                /> */}
+                                    <ArrowLeftSharp /><Typography>View diaries</Typography>
                                 </IconButton>
                                 <Button
                                     sx={{

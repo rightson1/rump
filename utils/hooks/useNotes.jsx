@@ -1,5 +1,5 @@
 import { db } from "../firebase";
-import { collection, getDocs, addDoc, deleteDoc, doc, setDoc, query, where, onSnapshot } from "firebase/firestore";
+import { collection, getDocs, addDoc, deleteDoc, doc, setDoc, query, where, updateDoc } from "firebase/firestore";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 const addNotes = (newNotes) => addDoc(collection(db, "notes"), newNotes)

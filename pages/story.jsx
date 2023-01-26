@@ -14,6 +14,7 @@ import Info from "../components/Info";
 import { useStoryMutation } from "../utils/hooks/useStory";
 import { useAuth } from "../utils/authContext";
 import Title from "../components/Title";
+import ArrowLeftSharp from "@mui/icons-material/ArrowLeftSharp";
 const Story = () => {
     const { colors, mode } = useGlobalProvider()
     const { user } = useAuth()
@@ -91,7 +92,7 @@ const Story = () => {
                         md: 'block',
                     },
                     bgcolor: colors.primary[mode === 'dark' ? 600 : 800],
-                    // bgcolor: colors.primary[300],
+
                     height: '100%',
                     height: "85vh"
 
@@ -129,8 +130,16 @@ const Story = () => {
                             justifyContent: 'space-between'
 
                         }}>
-                            <IconButton onClick={() => setOpen(true)}>
-                                <MenuOutlinedIcon sx={{
+                            <IconButton
+                                sx={{
+                                    visibility: {
+                                        xs: 'visible',
+                                        sm: 'visible',
+                                        md: 'hidden',
+                                    }
+                                }}
+                                onClick={() => setOpen(true)}>
+                                {/* <MenuOutlinedIcon sx={{
                                     display: {
                                         xs: 'block',
                                         sm: 'block',
@@ -138,7 +147,8 @@ const Story = () => {
                                     }
                                 }}
 
-                                />
+                                /> */}
+                                <ArrowLeftSharp /><Typography>View Stories</Typography>
                             </IconButton>
                             <Button
                                 sx={{
